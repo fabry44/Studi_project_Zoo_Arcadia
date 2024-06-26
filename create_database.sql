@@ -1,22 +1,9 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Hôte : 127.0.0.1
--- Généré le : lun. 24 juin 2024 à 12:40
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+
 
 -- Configurations initiales
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
--- Configuration des jeux de caractères pour assurer la compatibilité
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 -- Création de la base de données si elle n'existe pas déjà
 CREATE DATABASE IF NOT EXISTS `arcadia_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
@@ -24,14 +11,16 @@ USE `arcadia_db`;
 
 -- Table `utilisateurs`
 CREATE TABLE `utilisateurs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `prenom` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(180) NOT NULL,
+  `nom` VARCHAR(255) NOT NULL,
+  `prenom` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `roles` VARCHAR(255) NOT NULL,
+  `is_verified` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Table `races`
 CREATE TABLE `races` (
