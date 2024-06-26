@@ -3,21 +3,25 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateursRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UtilisateursRepository::class)]
-#[ORM\Table(name:"utilisateurs")] // nom exact de la table
-class Utilisateurs
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180)]
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
@@ -26,12 +30,18 @@ class Utilisateurs
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-    
-    #[ORM\Column(length: 255)]
+    /**
+     * @var list<string> The user roles
+     */
+    #[ORM\Column(type: "string", length: 255)]
     #[Assert\Choice(choices: ['administrateur', 'veterinaire', 'employe'], message: 'Choisissez un rôle valide.')]
-    private ?string $role = null;
+    private string $roles;
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
 
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'employe')]
     private Collection $avis;
@@ -45,8 +55,11 @@ class Utilisateurs
     #[ORM\OneToMany(targetEntity: Alimentations::class, mappedBy: 'employe')]
     private Collection $alimentations;
 
+    #[ORM\Column]
+    private bool $isVerified = false;
+
     public function __construct()
-    {
+    {   
         $this->avis = new ArrayCollection();
         $this->rapportsVeterinaires = new ArrayCollection();
         $this->avisHabitats = new ArrayCollection();
@@ -63,9 +76,10 @@ class Utilisateurs
         return $this->username;
     }
 
-    public function setUsername(string $username): self
+    public function setUsername(string $username): static
     {
         $this->username = $username;
+
         return $this;
     }
 
@@ -88,28 +102,6 @@ class Utilisateurs
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): self
-    {
-        $this->role = $role;
         return $this;
     }
 
@@ -207,6 +199,64 @@ class Utilisateurs
                 $alimentation->setEmploye(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    public function getRoles(): array
+    {
+        return [$this->roles]
+        ;
+    }
+
+    public function setRoles(string $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
         return $this;
     }
 }
