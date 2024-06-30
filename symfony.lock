@@ -26,6 +26,9 @@
             "./migrations/.gitignore"
         ]
     },
+    "easycorp/easyadmin-bundle": {
+        "version": "v4.10.2"
+    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -256,6 +259,12 @@
             "./config/packages/twig.yaml",
             "./templates/base.html.twig"
         ]
+    },
+    "symfony/uid": {
+        "version": "7.1",
+        "recipe": {
+            "version": "7.0"
+        }
     },
     "symfony/ux-turbo": {
         "version": "v2.18.0"

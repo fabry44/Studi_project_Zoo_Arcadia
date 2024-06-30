@@ -11,7 +11,6 @@ USE `arcadia_db`;
 
 -- Table `utilisateurs`
 CREATE TABLE `utilisateurs` (
-<<<<<<< HEAD
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(180) NOT NULL,
   `nom` varchar(255) NOT NULL,
@@ -21,18 +20,6 @@ CREATE TABLE `utilisateurs` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table pour stocker les informations des utilisateurs';
-=======
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(180) NOT NULL,
-  `nom` VARCHAR(255) NOT NULL,
-  `prenom` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
-  `roles` VARCHAR(255) NOT NULL,
-  `is_verified` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
->>>>>>> feature/authentication-system
 
 -- Table `races`
 CREATE TABLE `races` (
