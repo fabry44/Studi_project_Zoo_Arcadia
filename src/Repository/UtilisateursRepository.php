@@ -33,6 +33,19 @@ class UtilisateursRepository extends ServiceEntityRepository implements Password
         $this->getEntityManager()->flush();
     }
 
+    /**
+    * @return Utilisateurs[] Returns an array of Utilisateurs objects
+    */
+    public function findOneByRoles($value): ?Utilisateurs
+       {
+           return $this->createQueryBuilder('u')
+               ->andWhere('u.roles = :val')
+               ->setParameter('val', $value)
+               ->getQuery()
+               ->getOneOrNullResult()
+           ;
+       }
+
     //    /**
     //     * @return Utilisateurs[] Returns an array of Utilisateurs objects
     //     */

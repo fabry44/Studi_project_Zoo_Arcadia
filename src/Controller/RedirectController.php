@@ -17,7 +17,7 @@ class RedirectController extends AbstractController
     //     $this->security = $security;
     // }
 
-    #[Route('/redirect', name: 'post_register_or_login_redirect')]
+    #[Route('/redirect', name: 'post_login_redirect')]
     public function redirectAfterRegistration(): RedirectResponse
     {
         $user = $this->security->getUser();
