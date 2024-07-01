@@ -60,8 +60,8 @@ class RegistrationFormType extends AbstractType
                 ],
                 'label' => 'Rôle',
                 'choices' => [
-                    'Vétérinaire' => 'veterinaire',
-                    'Employé' => 'employe',
+                    'Vétérinaire' => 'ROLE_VETERINAIRE',
+                    'Employé' => 'ROLE_EMPLOYE',
                 ],
                 'expanded' => false,
                 'multiple' => false, 

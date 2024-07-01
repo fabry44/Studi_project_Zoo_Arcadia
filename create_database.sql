@@ -7,7 +7,9 @@ SET time_zone = "+00:00";
 
 -- Création de la base de données si elle n'existe pas déjà
 CREATE DATABASE IF NOT EXISTS `arcadia_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS `arcadia_db_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `arcadia_db`;
+USE `arcadia_db_test`;
 
 -- Table `utilisateurs`
 CREATE TABLE `utilisateurs` (
@@ -15,8 +17,10 @@ CREATE TABLE `utilisateurs` (
   `username` varchar(180) NOT NULL,
   `nom` varchar(255) NOT NULL,
   `prenom` varchar(255) NOT NULL,
-  `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '(DC2Type:json)' CHECK (json_valid(`roles`)),
+  -- `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '(DC2Type:json)' CHECK (json_valid(`roles`)),
+  `roles` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `is_verified` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table pour stocker les informations des utilisateurs';
