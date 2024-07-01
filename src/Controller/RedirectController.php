@@ -23,11 +23,11 @@ class RedirectController extends AbstractController
         $user = $this->security->getUser();
 
         // Redirection basée sur le rôle
-        if (in_array('administrateur', $user->getRoles())) {
-            return $this->redirectToRoute('admin_dashboard');
-        } elseif (in_array('veterinaire', $user->getRoles())) {
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return $this->redirectToRoute('admin');
+        } elseif (in_array('ROLE_VETERINAIRE', $user->getRoles())) {
             return $this->redirectToRoute('veterinarian_dashboard');
-        } elseif (in_array('employe', $user->getRoles())) {
+        } elseif (in_array('ROLE_EMPLOYE', $user->getRoles())) {
             return $this->redirectToRoute('employee_dashboard');
         }
 

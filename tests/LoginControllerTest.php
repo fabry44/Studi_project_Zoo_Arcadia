@@ -29,7 +29,31 @@ class LoginControllerTest extends WebTestCase
         /** @var UserPasswordHasherInterface $passwordHasher */
         $passwordHasher = $container->get('security.user_password_hasher');
 
-        $user = (new Utilisateurs())->setEmail('email@example.com');
+        $user = (new Utilisateurs())->setUsername('email.admin@example.com');
+        $user->setNom('Doe');
+        $user->setPrenom('John');
+        $user->setRoles('ROLE_ADMIN');
+        $user->setIsVerified(true);
+        $user->setPassword($passwordHasher->hashPassword($user, 'password'));
+
+        $em->persist($user);
+        $em->flush();
+
+        $user = (new Utilisateurs())->setUsername('email.veterinaire@example.com');
+        $user->setNom('dupont');
+        $user->setPrenom('jean');
+        $user->setRoles('ROLE_VETERINAIRE');
+         $user->setIsVerified(true);
+        $user->setPassword($passwordHasher->hashPassword($user, 'password'));
+
+        $em->persist($user);
+        $em->flush();
+
+        $user = (new Utilisateurs())->setUsername('email.employe@example.com');
+        $user->setNom('henry');
+        $user->setPrenom('bernard');
+        $user->setRoles('ROLE_EMPLOYE');
+         $user->setIsVerified(false);
         $user->setPassword($passwordHasher->hashPassword($user, 'password'));
 
         $em->persist($user);
@@ -58,7 +82,7 @@ class LoginControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         $this->client->submitForm('Sign in', [
-            '_username' => 'email@example.com',
+            '_username' => 'email.employe@example.com',
             '_password' => 'bad-password',
         ]);
 
@@ -70,11 +94,11 @@ class LoginControllerTest extends WebTestCase
 
         // Success - Login with valid credentials is allowed.
         $this->client->submitForm('Sign in', [
-            '_username' => 'email@example.com',
+            '_username' => 'email.admin@example.com',
             '_password' => 'password',
         ]);
 
-        self::assertResponseRedirects('/');
+        self::assertResponseRedirects('/admin');
         $this->client->followRedirect();
 
         self::assertSelectorNotExists('.alert-danger');

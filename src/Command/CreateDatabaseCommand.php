@@ -7,6 +7,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -38,7 +39,8 @@ class CreateDatabaseCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('Cette commande permet de créer une base de données à partir d\'un fichier SQL "create_database.sql"...');
+            ->setHelp('Cette commande permet de créer une base de données à partir d\'un fichier SQL "create_database.sql"...')
+            ->addOption('test', null, InputOption::VALUE_NONE, 'Si défini, crée la base de données de test.');
     }
 
     /**
@@ -55,11 +57,14 @@ class CreateDatabaseCommand extends Command
         $user = 'root';
         $password = '';
 
+        // Déterminer le nom de la base de données
+        $dbName = $input->getOption('test') ? 'arcadia_db_test' : 'arcadia_db';
+
         try {
             $pdo = new \PDO($dsn, $user, $password);
-            $pdo->exec("CREATE DATABASE IF NOT EXISTS arcadia_db");
-            $pdo->exec("USE arcadia_db");
-            $io->success('Base de données créée ou déjà existante.');
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS $dbName");
+            $pdo->exec("USE $dbName");
+            $io->success("Base de données '$dbName' créée ou déjà existante.");
         } catch (\PDOException $e) {
             $io->error('Impossible de créer la base de données: ' . $e->getMessage());
             return Command::FAILURE;

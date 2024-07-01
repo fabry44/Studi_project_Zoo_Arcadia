@@ -23,7 +23,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                target: homepage
+                target: app_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -34,9 +34,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin, roles: administrateur }
-        - { path: ^/employee, roles: employe }
-        - { path: ^/veterinaire, roles: veterinaire }
+        - { path: ^/admin, roles: 'ROLE_ADMIN' }
+        - { path: ^/employee, roles: 'ROLE_EMPLOYE' }
+        - { path: ^/veterinaire, roles: 'ROLE_VETERINAIRE' }
 
 when@test:
     security:

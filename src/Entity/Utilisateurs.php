@@ -34,7 +34,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column(type: "string", length: 255)]
-    #[Assert\Choice(choices: ['administrateur', 'veterinaire', 'employe'], message: 'Choisissez un rôle valide.')]
+    #[Assert\Choice(choices: ['ROLE_ADMIN', 'ROLE_VETERINAIRE', 'ROLE_EMPLOYE'], message: 'Choisissez un rôle valide.')]
     private string $roles;
 
     /**

@@ -1,0 +1,5 @@
+services:
+    mailer.message_logger_listener:
+        class: Symfony\Component\Mailer\EventListener\MessageLoggerListener
+        tags:
+            - { name: 'kernel.event_subscriber' }
