@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Controller\Admin\Dashboard;
+
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use App\Controller\Admin\Crud\UtilisateursCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use App\Controller\Admin\Crud\AlimentationsCrudController;
+use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
+use App\Controller\Admin\Crud\AnimauxCrudController;
+use App\Controller\Admin\Crud\HabitatsCrudController;
+use App\Controller\Admin\Crud\ServicesCrudController;
+use App\Controller\Admin\Crud\AvisCrudController;
+use App\Controller\Admin\Crud\AvisHabitatsCrudController;
+
+class VeterinaireDashboardController extends AbstractDashboardController
+{
+    #[Route('/veterinaire-dashboard', name: 'veterinaire_dashboard')]
+    public function index(): Response
+    {   
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+        $user = $this->getUser();
+        $roles = $user->getRoles();
+
+        if (in_array('ROLE_VETERINAIRE', $roles)) {
+
+            return $this->redirect($adminUrlGenerator->setController(RapportsVeterinairesCrudController::class)->generateUrl());
+        }else {
+            if (in_array('ROLE_ADMIN', $roles)) {
+
+                return $this->redirect($adminUrlGenerator->setController(UtilisateursCrudController::class)->generateUrl());
+            
+            }else if (in_array('ROLE_EMPLOYE', $roles)) {
+
+                return $this->redirect($adminUrlGenerator->setController(AlimentationsCrudController::class)->generateUrl());
+            
+            }else {
+
+                this->addFlash('error', 'Vous n\'avez pas les droits pour accéder à cette page. Connectez-vous avec un compte ayant les droits nécessaires.');
+                return $this->redirect('app_login');
+            }
+        }
+
+        return parent::index();
+
+        // Option 1. You can make your dashboard redirect to some common page of your backend
+        //
+        // $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+        // return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
+
+        // Option 2. You can make your dashboard redirect to different pages depending on the user
+        //
+        // if ('jane' === $this->getUser()->getUsername()) {
+        //     return $this->redirect('...');
+        // }
+
+        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
+        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
+        //
+        // return $this->render('some/path/my-dashboard.html.twig');
+    }
+
+    public function configureDashboard(): Dashboard
+    {
+        return Dashboard::new()
+            ->setTitle('Studi Project Zoo Arcadia');
+    }
+
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+    }
+}
