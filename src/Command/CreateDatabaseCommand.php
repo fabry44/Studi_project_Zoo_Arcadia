@@ -76,11 +76,32 @@ class CreateDatabaseCommand extends Command
             $io->error('Le fichier SQL est vide.');
             return Command::FAILURE;
         }
+        
+        // Utilisation de $pdo pour exécuter le script SQL
 
+        // Installation de la base de données
         try {
-            $stmt = $pdo->prepare($sql);  // Utilisation de $pdo au lieu de $conn
+            $stmt = $pdo->prepare($sql);  
             $stmt->execute();
-            $io->success('Script SQL exécuté avec succès.');
+            $io->success('Base de données créée avec succès.');
+        } catch (\PDOException $e) {
+            $io->error('Échec de l\'exécution du script SQL: ' . $e->getMessage());
+            return Command::FAILURE;
+        }
+
+
+        // Importation des données
+
+        $importData = file_get_contents('import_data.sql');
+        if (!$importData) {
+            $io->error('Le fichier SQL est vide.');
+            return Command::FAILURE;
+        }
+        
+        try {
+            $stmt = $pdo->prepare($importData);  
+            $stmt->execute();
+            $io->success('les donnée ont été importées avec succès.');
         } catch (\PDOException $e) {
             $io->error('Échec de l\'exécution du script SQL: ' . $e->getMessage());
             return Command::FAILURE;

@@ -35,17 +35,20 @@ class LoginRedirectListener
         if ($user) {
             $roles = $user->getRoles();
             $isVerified = $user->isVerified();
-
-            if (in_array('ROLE_ADMIN', $roles) && $isVerified === true) {
-                $response = new RedirectResponse($this->router->generate('admin'));
-            } elseif (in_array('ROLE_VETERINAIRE', $roles && $isVerified === true)) {
-                $response = new RedirectResponse($this->router->generate('veterinaire_dashboard'));
-            } elseif (in_array('ROLE_EMPLOYE', $roles  && $isVerified === true)) {
-                $response = new RedirectResponse($this->router->generate('employe_dashboard'));
-            } else {
-                return $response = new RedirectResponse($this->router->generate('homepage'));
+            dump($isVerified);
+            if ($isVerified === true) {
+                if (in_array('ROLE_ADMIN', $roles)) {
+                    $response = new RedirectResponse($this->router->generate('admin'));
+                } elseif (in_array('ROLE_VETERINAIRE', $roles)) {
+                    $response = new RedirectResponse($this->router->generate('veterinaire_dashboard'));
+                } elseif (in_array('ROLE_EMPLOYE', $roles)) {
+                    $response = new RedirectResponse($this->router->generate('employe_dashboard'));
+                } else {
+                    return $response = new RedirectResponse($this->router->generate('app_login'));
+                }
+            }else {
+                return $response = new RedirectResponse($this->router->generate('app_login'));
             }
-
             $request->getSession()->getFlashBag()->add('success', 'Bienvenue ' . $user->getUsername());
             $event->setResponse($response);
         }
