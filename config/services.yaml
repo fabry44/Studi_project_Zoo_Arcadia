@@ -32,3 +32,11 @@ services:
     App\EventListener\LoginRedirectListener:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    
+    App\EventSubscriber\UtilisateursSubscriber:
+        arguments:
+            $passwordHasher: '@security.password_hasher'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $emailVerifier: '@App\Security\EmailVerifier'
+        tags:
+            - { name: 'kernel.event_subscriber' }

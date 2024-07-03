@@ -31,11 +31,13 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     /**
-     * @var list<string> The user roles
+     * @var array The user roles
      */
-    #[ORM\Column(type: "string", length: 255)]
-    #[Assert\Choice(choices: ['ROLE_ADMIN', 'ROLE_VETERINAIRE', 'ROLE_EMPLOYE'], message: 'Choisissez un rôle valide.')]
-    private string $roles;
+    #[ORM\Column(type: "json")]
+    #[Assert\All([
+        new Assert\Choice(choices: ['ROLE_ADMIN', 'ROLE_VETERINAIRE', 'ROLE_EMPLOYE'], message: 'Choisissez un rôle valide.')
+    ])]
+    private array $roles = [];
 
     /**
      * @var string The hashed password
@@ -214,15 +216,15 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [$this->roles]
-        ;
+        return $this->roles;
     }
 
-    public function setRoles(string $roles): self
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
         return $this;
     }
+    
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -259,4 +261,11 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function __toString(): string
+{
+    return implode(', ', $this->getRoles());
+}
+
+   
 }

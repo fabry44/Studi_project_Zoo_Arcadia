@@ -39,8 +39,8 @@ class CreateDatabaseCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('Cette commande permet de créer une base de données à partir d\'un fichier SQL "create_database.sql"...')
-            ->addOption('test', null, InputOption::VALUE_NONE, 'Si défini, crée la base de données de test.');
+            ->setHelp('Cette commande permet de créer une base de données à partir d\'un fichier SQL "create_database.sql"...');
+            
     }
 
     /**
@@ -58,7 +58,7 @@ class CreateDatabaseCommand extends Command
         $password = '';
 
         // Déterminer le nom de la base de données
-        $dbName = $input->getOption('test') ? 'arcadia_db_test' : 'arcadia_db';
+        $dbName = 'arcadia_db';
 
         try {
             $pdo = new \PDO($dsn, $user, $password);

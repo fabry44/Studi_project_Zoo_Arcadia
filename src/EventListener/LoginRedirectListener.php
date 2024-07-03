@@ -34,15 +34,16 @@ class LoginRedirectListener
         $user = $token->getUser();
         if ($user) {
             $roles = $user->getRoles();
+            $isVerified = $user->isVerified();
 
-            if (in_array('ROLE_ADMIN', $roles)) {
+            if (in_array('ROLE_ADMIN', $roles) && $isVerified === true) {
                 $response = new RedirectResponse($this->router->generate('admin'));
-            } elseif (in_array('ROLE_VETERINAIRE', $roles)) {
+            } elseif (in_array('ROLE_VETERINAIRE', $roles && $isVerified === true)) {
                 $response = new RedirectResponse($this->router->generate('veterinaire_dashboard'));
-            } elseif (in_array('ROLE_EMPLOYE', $roles)) {
+            } elseif (in_array('ROLE_EMPLOYE', $roles  && $isVerified === true)) {
                 $response = new RedirectResponse($this->router->generate('employe_dashboard'));
             } else {
-                return;
+                return $response = new RedirectResponse($this->router->generate('homepage'));
             }
 
             $request->getSession()->getFlashBag()->add('success', 'Bienvenue ' . $user->getUsername());
