@@ -4,17 +4,16 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
 -- Création de la base de données si elle n'existe pas déjà
--- CREATE DATABASE IF NOT EXISTS `arcadia_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS `testarcadia_db_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 -- CREATE DATABASE IF NOT EXISTS `arcadia_dbtest` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 -- USE `arcadia_db`;
--- USE `arcadia_dbtest_test`;
+USE `testarcadia_db_test`;
 
 -- Table `utilisateurs`
 CREATE TABLE `utilisateurs` (

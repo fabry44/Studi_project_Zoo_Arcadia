@@ -99,7 +99,7 @@ class CreateAdminCommand extends Command
         );
         $user->setNom($input->getOption('nom'));
         $user->setPrenom($input->getOption('prenom'));
-        $user->setRoles('administrateur'); // Assurez-vous que les rôles sont un tableau
+        $user->setRoles(['ROLE_ADMIN']); 
         $user->setIsVerified(false);
 
         $this->entityManager->persist($user);

@@ -21,15 +21,26 @@ class RedirectController extends AbstractController
     public function redirectAfterRegistration(): RedirectResponse
     {
         $user = $this->security->getUser();
-
-        // Redirection basée sur le rôle
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
-            return $this->redirectToRoute('admin');
-        } elseif (in_array('ROLE_VETERINAIRE', $user->getRoles())) {
-            return $this->redirectToRoute('veterinarian_dashboard');
-        } elseif (in_array('ROLE_EMPLOYE', $user->getRoles())) {
-            return $this->redirectToRoute('employee_dashboard');
+        $isVerified = $this->getIsVerified();
+        
+        if ($isVerified === false) {
+            $this->addFlash(
+               'warning',
+               'Veuillez vérifier votre adresse e-mail pour activer votre compte.'
+            );
+            return $this->redirectToRoute('/login');
+        }else{
+            // Redirection basée sur le rôle
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->redirectToRoute('admin');
+            } elseif (in_array('ROLE_VETERINAIRE', $user->getRoles())) {
+                return $this->redirectToRoute('veterinarian_dashboard');
+            } elseif (in_array('ROLE_EMPLOYE', $user->getRoles())) {
+                return $this->redirectToRoute('employee_dashboard');
+            }
         }
+
+        
 
         // Route par défaut si aucun rôle spécifique
         return $this->redirectToRoute('homepage');
