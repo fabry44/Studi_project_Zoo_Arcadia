@@ -22,13 +22,32 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 
 class AdminDashboardController extends AbstractDashboardController
 {
-    #[Route('/admin', name: 'admin')]
+    #[Route('/admin-dashbord', name: 'admin_dashboard')]
     public function index(): Response
     {   
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-       
+        $user = $this->getUser();
+        $roles = $user->getRoles();
+
+        if (in_array('ROLE_ADMIN', $roles)) {
 
             return $this->redirect($adminUrlGenerator->setController(UtilisateursCrudController::class)->generateUrl());
+        
+        }else {
+            if (in_array('ROLE_EMPLOYE', $roles)) {
+
+                return $this->redirect($adminUrlGenerator->setController(AlimentationsCrudController::class)->generateUrl());
+            
+            }else if (in_array('ROLE_VETERINAIRE', $roles)) {
+
+                return $this->redirect($adminUrlGenerator->setController(RapportsVeterinairesCrudController::class)->generateUrl());
+            
+            }else {
+
+                this->addFlash('error', 'Vous n\'avez pas les droits pour accéder à cette page. Connectez-vous avec un compte ayant les droits nécessaires.');
+                return $this->redirect('app_login');
+            }
+        }
        
 
 
