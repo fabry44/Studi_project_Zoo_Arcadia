@@ -8,14 +8,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Controller\Admin\Crud\UtilisateursCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Controller\Admin\Crud\AlimentationsCrudController;
-use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
-use App\Controller\Admin\Crud\AnimauxCrudController;
-use App\Controller\Admin\Crud\HabitatsCrudController;
-use App\Controller\Admin\Crud\ServicesCrudController;
 use App\Controller\Admin\Crud\AvisCrudController;
-use App\Controller\Admin\Crud\AvisHabitatsCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use App\Entity\Utilisateurs;
+use App\Entity\Animaux;
+use App\Entity\Habitats;
+use App\Entity\Services;
+use App\Entity\RapportsVeterinaires;
+use App\Entity\Alimentations;
+use App\Entity\Avis;
+use App\Entity\AvisHabitats;
+use Symfony\Component\Security\Core\User\UserInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+
 
 class EmployeDashboardController extends AbstractDashboardController
 {
@@ -27,7 +33,7 @@ class EmployeDashboardController extends AbstractDashboardController
         $roles = $user->getRoles();
         if (in_array('ROLE_EMPLOYE', $roles)) {
 
-            return $this->redirect($adminUrlGenerator->setController(AlimentationsCrudController::class)->generateUrl());
+            return $this->redirect($adminUrlGenerator->setController(AvisCrudController::class)->generateUrl());
         }else {
             if (in_array('ROLE_ADMIN', $roles)) {
 
@@ -67,7 +73,7 @@ class EmployeDashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Studi Project Zoo Arcadia');
+            ->setTitle('Espace Employe');
     }
 
     public function configureMenuItems(): iterable
