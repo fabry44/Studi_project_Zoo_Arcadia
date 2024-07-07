@@ -11,8 +11,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Association;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class HabitatsCrudController extends AbstractCrudController
 {
@@ -22,15 +23,27 @@ class HabitatsCrudController extends AbstractCrudController
     }
 
      public function configureFields(string $pageName): iterable
-    {
+    {   
         return [
             IdField::new('id')->onlyOnIndex(),
             TextField::new('nom'),
             
-            TextEditorField::new('description')->hideOnForm(),
-            // TextField::new('description')->hideOnIndex(),
-            TextField::new('animauxPresents')->hideOnDetail(),
-            TextField::new('imgHabitats')->setFormType(VichImageType::class)->hideOnIndex(),
+            TextEditorField::new('descript')->hideOnIndex(),
+            // TextField::new('descript')->hideOnIndex(),
+            CollectionField::new('animauxPresents')
+                ->onlyOnDetail()
+                ->setTemplatePath('admin/fields/animaux_links.html.twig'),
+            AssociationField::new('animauxPresents')
+                ->setCrudController(AnimauxCrudController::class)
+                
+                ->onlyOnIndex(),
+            CollectionField::new('avisHabitats')
+                ->onlyOnDetail(),
+            AssociationField::new('avisHabitats')
+                ->setCrudController(AnimauxCrudController::class)
+                
+                ->onlyOnIndex(),
+            // ImageField::new('imgHabitats')->hideOnIndex(),
            
         ];
     }

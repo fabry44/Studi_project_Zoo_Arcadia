@@ -1,0 +1,9 @@
+{# Ajout de liens vers les fiches des habitats dans le tableau de bord de l'admin #}
+    <a href="{{ path('admin_dashboard', {
+        crudAction: 'detail',
+        crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\HabitatsCrudController',        
+        entityId: field.value.id
+    }) }}">
+        {{ field.value.nom }} -> voir la fiche
+    </a><br>
+

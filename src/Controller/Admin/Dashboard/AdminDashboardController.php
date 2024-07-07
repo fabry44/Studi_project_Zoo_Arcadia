@@ -19,10 +19,13 @@ use App\Entity\Avis;
 use App\Entity\AvisHabitats;
 use Symfony\Component\Security\Core\User\UserInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
+
+
 
 class AdminDashboardController extends AbstractDashboardController
 {
-    #[Route('/admin-dashbord', name: 'admin_dashboard')]
+    #[Route('/admin-dashboard', name: 'admin_dashboard')]
     public function index(): Response
     {   
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
@@ -48,34 +51,15 @@ class AdminDashboardController extends AbstractDashboardController
                 return $this->redirect('app_login');
             }
         }
-       
-
-
-        // return parent::index();
-
-        // Option 1. You can make your dashboard redirect to some common page of your backend
-        //
-        // $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        // return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
-
-        //Option 2. You can make your dashboard redirect to different pages depending on the user
-        
-        // if ('ROLE_ADMIN' === $this->getUser()->getRoles()) {
-
-        //     return $this->redirect('admin');
-        // }
-
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
-        //
-        // return $this->render('some/path/my-dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Espace Administrateur');
+            ->setTitle('Espace Administrateur')
             // ->renderSidebarMinimized();
+            ->setLocales(['fr']);
+            
     }
 
     public function configureMenuItems(): iterable
@@ -88,6 +72,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Habitats', 'fa fa-leaf', Habitats::class);
         yield MenuItem::linkToCrud('Animaux', 'fa fa-paw', Animaux::class);
         yield MenuItem::linkToCrud('Rapport Veterinaire ', 'fas fa-file-circle-check', RapportsVeterinaires::class);
+
     }
     public function configureUserMenu(UserInterface $user): UserMenu
     {
@@ -104,7 +89,7 @@ class AdminDashboardController extends AbstractDashboardController
             // ->setAvatarUrl('https://...')
             // ->setAvatarUrl($user->getProfileImageUrl())
             // use this method if you don't want to display the user image
-            ->displayUserAvatar(false)
+            ->displayUserAvatar(true)
             // you can also pass an email address to use gravatar's service
             ->setGravatarEmail($user->getUserName())
 
@@ -116,7 +101,14 @@ class AdminDashboardController extends AbstractDashboardController
                 ->setEntityId($this->getUser()->getId()),
 
                 MenuItem::section(),
-                // MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
+                MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
+            
             ]);
     }
+
+    
+
+
+    
+        
 }

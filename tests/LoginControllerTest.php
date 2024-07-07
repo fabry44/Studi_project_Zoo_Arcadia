@@ -6,60 +6,33 @@ use App\Entity\Utilisateurs;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Tests\Traits\DatabaseTrait;
+use App\Tests\Traits\UserLoginTrait;
 
 class LoginControllerTest extends WebTestCase
 {
+    use DatabaseTrait;
+    use UserLoginTrait;
+
     private KernelBrowser $client;
 
     protected function setUp(): void
     {
+        // Initialiser le client
         $this->client = static::createClient();
         $container = static::getContainer();
+
+        // Initialiser la base de données
+        $this->initializeDatabase();
+
         $em = $container->get('doctrine.orm.entity_manager');
-        $userRepository = $em->getRepository(Utilisateurs::class);
+        $passwordHasher = $container->get(UserPasswordHasherInterface::class);
 
-        // supprimer tous les utilisateurs de la base de données avant de commencer les tests de connexion
-        foreach ($userRepository->findAll() as $user) {
-            $em->remove($user);
-        }
+        // Initialiser les utilisateurs
+        $this->initializeUsers($em, $passwordHasher);
 
-        $em->flush();
-
-        // Créer un utilisateur admin
-        /** @var UserPasswordHasherInterface $passwordHasher */
-        $passwordHasher = $container->get('security.user_password_hasher');
-
-        $user = (new Utilisateurs())->setUsername('email.admin@example.com');
-        $user->setNom('Doe');
-        $user->setPrenom('John');
-        $user->setRoles(['ROLE_ADMIN']);
-        $user->setIsVerified(true);
-        $user->setPassword($passwordHasher->hashPassword($user, 'password'));
-
-        $em->persist($user);
-        $em->flush();
-
-        // Créer un utilisateur vétérinaire
-        $user = (new Utilisateurs())->setUsername('email.veterinaire@example.com');
-        $user->setNom('dupont');
-        $user->setPrenom('jean');
-        $user->setRoles(['ROLE_VETERINAIRE']);
-         $user->setIsVerified(true);
-        $user->setPassword($passwordHasher->hashPassword($user, 'password'));
-
-        $em->persist($user);
-        $em->flush();
-
-        // Créer un utilisateur employé
-        $user = (new Utilisateurs())->setUsername('email.employe@example.com');
-        $user->setNom('henry');
-        $user->setPrenom('bernard');
-        $user->setRoles(['ROLE_EMPLOYE']);
-         $user->setIsVerified(false);
-        $user->setPassword($passwordHasher->hashPassword($user, 'password'));
-
-        $em->persist($user);
-        $em->flush();
+        // Se connecter avec l'utilisateur admin
+        $this->loginAdmin($this->client, $container);
     }
 
     public function testLogin(): void
@@ -68,7 +41,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Sign in', [
+        $this->client->submitForm('Log in', [
             '_username' => 'doesNotExist@example.com',
             '_password' => 'password',
         ]);
@@ -77,13 +50,13 @@ class LoginControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // S'assurer de ne pas révéler que l'utilisateur existe ou pas.
-        self::assertSelectorTextContains('.alert-danger', 'Invalid credentials.');
+        self::assertSelectorTextContains('.alert-danger', 'Identifiants invalides.');
 
         // non autorisé - Impossible de se connecter avec mauvais mot de passe.
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Sign in', [
+        $this->client->submitForm('Log in', [
             '_username' => 'email.employe@example.com',
             '_password' => 'bad-password',
         ]);
@@ -92,31 +65,18 @@ class LoginControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // S'assurer de ne pas révéler que le mot de passe est incorrect et que le username existe bien.
-        self::assertSelectorTextContains('.alert-danger', 'Invalid credentials.');
-
-        // non autorisé - Impossible de se connecter avec un utilisateur non vérifié.
-        // $this->client->request('GET', '/login');
-        // self::assertResponseIsSuccessful();
-
-        // $this->client->submitForm('Sign in', [
-        //     '_username' => 'email.veterinaire@example.com',
-        //     '_password' => 'password',
-        // ]);
-
-        // self::assertResponseRedirects('/login');TODO 
-        // $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert-danger', 'Identifiants invalides.');
 
         // Success - le login est réussi
-        $this->client->submitForm('Sign in', [
+        $this->client->submitForm('Log in', [
             '_username' => 'email.admin@example.com',
             '_password' => 'password',
         ]);
 
-        self::assertResponseRedirects('/admin');
+        self::assertResponseRedirects('/admin-dashboard');
         $this->client->followRedirect();
 
         self::assertSelectorNotExists('.alert-danger');
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
-        // self::assertResponseIsSuccessful();
     }
 }

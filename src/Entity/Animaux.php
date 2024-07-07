@@ -152,4 +152,9 @@ class Animaux
         }
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->prenom;
+    }
 }

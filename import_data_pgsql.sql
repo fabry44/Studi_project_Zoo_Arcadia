@@ -55,10 +55,11 @@ INSERT INTO alimentations (animal_id, employe_id, date_alimentation, nourriture,
 (3, 3, CURRENT_DATE, 'Feuilles', 10.0);
 
 -- Rapports vétérinaires pour chaque animal en exemple
-INSERT INTO rapports_veterinaires (animal_id, veterinaire_id, etat, nourriture, grammage, detail) VALUES
-(1, 2, 'Sain', 'Viande', 5, 'Le lion montre une excellente santé et vigueur.'),
-(2, 2, 'Sain', 'Fruits', 1.5, 'Actif et en bonne santé, montre une curiosité naturelle.'),
-(3, 2, 'Sain', 'Feuilles', 10, 'Santé stable, nécessite surveillance continue des pattes pour signes d''arthrite.');
+
+INSERT INTO rapports_veterinaires (animal_id, date, veterinaire_id, etat, nourriture, grammage, detail) VALUES
+(1, CURRENT_TIMESTAMP, 2, 'Sain', 'Viande', 5, 'Le lion montre une excellente santé et vigueur.'),
+(2, CURRENT_TIMESTAMP, 2, 'Sain', 'Fruits', 1.5, 'Actif et en bonne santé, montre une curiosité naturelle.'),
+(3, CURRENT_TIMESTAMP, 2, 'Sain', 'Feuilles', 10, 'Santé stable, nécessite surveillance continue des pattes pour signes d''arthrite.');
 
 -- Fermeture de la transaction pour garantir l'intégrité
 COMMIT;

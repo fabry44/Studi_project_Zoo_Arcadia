@@ -50,4 +50,9 @@ class ImgHabitats
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->habitat;
+    }
 }

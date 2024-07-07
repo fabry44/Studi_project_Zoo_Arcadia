@@ -35,6 +35,9 @@ class RapportsVeterinaires
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateurs $veterinaire = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $date = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,4 +108,22 @@ class RapportsVeterinaires
         $this->veterinaire = $veterinaire;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->veterinaire . ' - ' .$this->etat . ' - ' . $this->nourriture . ' - ' . $this->grammage . ' - ' . $this->detail . 'g';
+    }
+
+    public function getDate(): ?\DateTimeImmutable
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeImmutable $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+    
 }
