@@ -44,3 +44,15 @@ services:
             $emailVerifier: '@App\Security\EmailVerifier'
         tags:
             - { name: 'kernel.event_subscriber' }
+              
+    # App\Service\SetImageService:
+    #     arguments:
+    #         $dsn: '%database.dsn%'
+    #         $user: '%database.user%'
+    #         $password: '%database.password%'
+
+    # App\Service\GetImageService:
+    #     arguments:
+    #         $dsn: '%database.dsn%'
+    #         $user: '%database.user%'
+    #         $password: '%database.password%'

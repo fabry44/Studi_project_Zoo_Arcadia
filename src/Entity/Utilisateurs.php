@@ -262,10 +262,17 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function __toString(): string
-{
-    return implode(', ', $this->getRoles());
-}
+ 
+
+    public function Roles__toString(): string
+    {
+        return implode(', ', $this->getRoles());
+    }
+
+    public function __toString()
+    {
+        return $this->getNom() . ' ' . $this->getPrenom();
+    }
 
    
 }

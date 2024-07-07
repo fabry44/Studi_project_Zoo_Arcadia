@@ -1,0 +1,8 @@
+{# Ajout de lien vers la fiche du Vétérinaire #}
+    <a href="{{ path('admin_dashboard', {
+        crudAction: 'detail',
+        crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\UtilisateursCrudController',        
+        entityId: field.value.id
+    }) }}">
+       {{ field.value.prenom }} {{ field.value.nom }} 
+    </a><br>

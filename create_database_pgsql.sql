@@ -1,6 +1,6 @@
 -- Création de la base de données
 -- Pour PostgreSQL, créez la base de données séparément si nécessaire
--- CREATE DATABASE arcadia_db;
+-- CREATE DATABASE testarcadia_db_test;
 
 
 
@@ -97,6 +97,7 @@ CREATE TABLE img_habitats (
 -- Table `rapports_veterinaires`
 CREATE TABLE rapports_veterinaires (
   id SERIAL PRIMARY KEY,
+  date timestamp(0) without time zone NOT NULL,
   animal_id INTEGER NOT NULL,
   veterinaire_id INTEGER NOT NULL,
   etat VARCHAR(255) NOT NULL,

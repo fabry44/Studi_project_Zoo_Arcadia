@@ -35,13 +35,14 @@ class UtilisateursSubscriber implements EventSubscriberInterface
     public function setUserPasswordAndSendEmail(BeforeEntityPersistedEvent $event)
     {
         $entity = $event->getEntityInstance();
-
+        
         if (!($entity instanceof Utilisateurs)) {
             return;
         }
 
         // Encoder le mot de passe
         $plainPassword = $entity->getPassword();
+        
         if ($plainPassword !== null) {
             $entity->setPassword(
                 $this->passwordHasher->hashPassword(
