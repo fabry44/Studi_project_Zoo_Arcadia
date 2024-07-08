@@ -26,5 +26,6 @@ class DatabaseShemaValidationTest extends WebTestCase
     protected function tearDown(): void
     {
         $this->dropDatabase();
+        parent::tearDown();
     }
 }

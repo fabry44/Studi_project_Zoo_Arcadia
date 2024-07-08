@@ -70,7 +70,7 @@ class UtilisateursSubscriberTest extends WebTestCase
 
         // Submit the form with the correct data
         $this->client->submitForm('Créer', [
-            'Utilisateurs[username]' => 'fabienroy2@gmail.com',
+            'Utilisateurs[username]' => 'test@example.com',
             'Utilisateurs[password]' => 'plainPassword',
             'Utilisateurs[nom]' => 'NomTest',
             'Utilisateurs[prenom]' => 'PrenomTest',
@@ -82,7 +82,7 @@ class UtilisateursSubscriberTest extends WebTestCase
         // $this->client->followRedirect();
         // $this->assertSelectorTextContains('.flash-notice', 'The user has been created.');TODO
 
-        $user = static::getContainer()->get('doctrine')->getRepository(Utilisateurs::class)->findOneBy(['username' => 'fabienroy2@gmail.com']);
+        $user = static::getContainer()->get('doctrine')->getRepository(Utilisateurs::class)->findOneBy(['username' => 'test@example.com']);
         $this->assertNotNull($user);
         $this->assertTrue($this->passwordHasher->isPasswordValid($user, 'plainPassword'));
         $this->assertFalse($user->isVerified());

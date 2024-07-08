@@ -63,4 +63,10 @@ final class UtilisateursCrudControllerTest extends AbstractCrudTestCase
         static::assertResponseIsSuccessful();
         
     }
+
+    protected function tearDown(): void
+    {
+        $this->dropDatabase();
+        parent::tearDown();
+    }
 }

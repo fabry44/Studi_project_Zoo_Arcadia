@@ -15,7 +15,7 @@ trait DatabaseTrait
     private string $dbName = 'testarcadia_db_test';
 
     protected function initializeDatabase(): void
-    {
+    {   
         // Récupérer le container de l'application
         $container = static::getContainer();
 
