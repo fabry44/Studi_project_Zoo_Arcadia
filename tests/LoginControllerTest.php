@@ -15,9 +15,12 @@ class LoginControllerTest extends WebTestCase
     use UserLoginTrait;
 
     private KernelBrowser $client;
+    private $passwordHasher;
 
     protected function setUp(): void
-    {
+    {   
+        parent::setUp();
+
         // Initialiser le client
         $this->client = static::createClient();
         $container = static::getContainer();
@@ -33,6 +36,12 @@ class LoginControllerTest extends WebTestCase
 
         // Se connecter avec l'utilisateur admin
         $this->loginAdmin($this->client, $container);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->dropDatabase();
+        parent::tearDown();
     }
 
     public function testLogin(): void
