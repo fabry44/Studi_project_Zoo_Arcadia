@@ -23,11 +23,11 @@ class ServicesCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->onlyOnIndex(),
-            TextField::new('nom'),
-            
-            TextEditorField::new('descript')->hideOnIndex(),
-            // TextField::new('description')->hideOnIndex(),
+            IdField::new('id')
+                ->onlyOnIndex(),
+            TextField::new('nom'),            
+            TextEditorField::new('descript')
+                ->hideOnIndex(),
             
             // ImageField::new('imgServices')->hideOnIndex(),
            
@@ -39,7 +39,26 @@ class ServicesCrudController extends AbstractCrudController
         return $actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
+
+            // Autoriser l'action de Création uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN
+            ->setPermission(Action::NEW, 'ROLE_AMIN')
+
+            // // Autoriser l'action d'édition uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN ou ROLE_VETERINAIRE
+            // ->setPermission(Action::EDIT, 'ROLE_ADMIN')
+            // ->setPermission(Action::EDIT, 'ROLE_VETERINAIRE')
+
+            // Autoriser l'action de suppression uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN
+            ->setPermission(Action::DELETE, 'ROLE_AMIN')
+        ;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setPageTitle('index', 'Gestion des Services du ZOO')
+            ->setPageTitle('new', 'Ajouter un nouveau Service')
+            ->setPageTitle('edit', 'Modifier un Service Existant')
+            ->setPageTitle('detail', 'Détails du Service')
         ;
     }
 }

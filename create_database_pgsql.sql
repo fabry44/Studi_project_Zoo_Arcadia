@@ -43,7 +43,7 @@ CREATE TABLE alimentations (
   id SERIAL PRIMARY KEY,
   animal_id INTEGER NOT NULL,
   employe_id INTEGER NOT NULL,
-  date_alimentation TIMESTAMPTZ NOT NULL,
+  date timestamp(0) without time zone NOT NULL,
   nourriture VARCHAR(255) NOT NULL,
   quantite DOUBLE PRECISION NOT NULL,
   FOREIGN KEY (animal_id) REFERENCES animaux (id) ON DELETE CASCADE,
@@ -64,9 +64,9 @@ CREATE TABLE avis (
 CREATE TABLE avis_habitats (
   id SERIAL PRIMARY KEY,
   habitat_id INTEGER,
+  date timestamp(0) without time zone NOT NULL,
   veterinaire_id INTEGER,
   avis TEXT NOT NULL,
-  date_avis DATE NOT NULL,
   FOREIGN KEY (habitat_id) REFERENCES habitats (id),
   FOREIGN KEY (veterinaire_id) REFERENCES utilisateurs (id)
 );

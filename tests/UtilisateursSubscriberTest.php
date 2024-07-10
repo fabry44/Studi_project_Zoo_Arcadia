@@ -55,7 +55,7 @@ class UtilisateursSubscriberTest extends WebTestCase
     public function testCreateUser()
     {   
         $this->client->request('GET', '/login');
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm('Se connecter', [
             '_username' => 'email.admin@example.com',
             '_password' => 'password',
         ]);

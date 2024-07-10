@@ -11,21 +11,13 @@ use App\Controller\Admin\Crud\UtilisateursCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Controller\Admin\Crud\AlimentationsCrudController;
 use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
-use App\Controller\Admin\Crud\AnimauxCrudController;
-use App\Controller\Admin\Crud\HabitatsCrudController;
-use App\Controller\Admin\Crud\ServicesCrudController;
-use App\Controller\Admin\Crud\AvisCrudController;
-use App\Controller\Admin\Crud\AvisHabitatsCrudController;
+use App\Entity\Alimentations;
 use Symfony\Component\Security\Core\User\UserInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use App\Entity\Utilisateurs;
 use App\Entity\Animaux;
 use App\Entity\Habitats;
-use App\Entity\Services;
 use App\Entity\RapportsVeterinaires;
-use App\Entity\Alimentations;
-use App\Entity\Avis;
-use App\Entity\AvisHabitats;
 
 class VeterinaireDashboardController extends AbstractDashboardController
 {
@@ -50,7 +42,7 @@ class VeterinaireDashboardController extends AbstractDashboardController
             
             }else {
 
-                this->addFlash('error', 'Vous n\'avez pas les droits pour accéder à cette page. Connectez-vous avec un compte ayant les droits nécessaires.');
+                $this->addFlash('error', 'Vous n\'avez pas les droits pour accéder à cette page. Connectez-vous avec un compte ayant les droits nécessaires.');
                 return $this->redirect('app_login');
             }
         }
@@ -76,7 +68,8 @@ class VeterinaireDashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Espace Vétérinaire');
+            ->setTitle('Espace Vétérinaire')
+            ->setLocales(['fr']);
     }
 
     public function configureMenuItems(): iterable
@@ -84,9 +77,10 @@ class VeterinaireDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Profile', 'fa fa-user', Utilisateurs::class)
             ->setAction('detail')
             ->setEntityId($this->getUser()->getId());
-        yield MenuItem::linkToCrud('Habitats', 'fa fa-leaf', Habitats::class);
-        yield MenuItem::linkToCrud('Animaux', 'fa fa-paw', Animaux::class);
-        yield MenuItem::linkToCrud('Rapport Veterinaire ', 'fas fa-file-circle-check', RapportsVeterinaires::class);
+        yield MenuItem::linkToCrud('Gestion des habitats', 'fa fa-leaf', Habitats::class);
+        yield MenuItem::linkToCrud('Gestion des animaux', 'fa fa-paw', Animaux::class);
+        yield MenuItem::linkToCrud('Suivi des Rapports', 'fas fa-file-circle-check', RapportsVeterinaires::class);
+        yield MenuItem::linkToCrud('Rations alimentaires', 'fa fa-bowl-food', Alimentations::class);
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu
@@ -106,7 +100,7 @@ class VeterinaireDashboardController extends AbstractDashboardController
             // use this method if you don't want to display the user image
             ->displayUserAvatar(false)
             // you can also pass an email address to use gravatar's service
-            ->setGravatarEmail($user->getUserName())
+            // ->setGravatarEmail($user->getUserName())
 
             // you can use any type of menu item, except submenus
             ->addMenuItems([

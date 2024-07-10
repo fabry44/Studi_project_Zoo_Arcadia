@@ -15,7 +15,7 @@ class Alimentations
     private ?int $id = null;
 
     #[ORM\Column(type: "datetime_immutable")]
-    private ?\DateTimeImmutable $date_alimentation = null;
+    private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nourriture = null;
@@ -31,19 +31,24 @@ class Alimentations
     #[ORM\JoinColumn(name: "employe_id", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")]
     private Utilisateurs $employe;
 
+    public function __construct()
+    {
+        $this->animal = new Animaux();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDateAlimentation(): ?\DateTimeImmutable
+    public function getDate(): ?\DateTimeImmutable
     {
-        return $this->date_alimentation;
+        return $this->date;
     }
 
-    public function setDateAlimentation(\DateTimeImmutable $date_alimentation): self
+    public function setDate(\DateTimeImmutable $date): self
     {
-        $this->date_alimentation = $date_alimentation;
+        $this->date = $date;
         return $this;
     }
 
@@ -90,4 +95,8 @@ class Alimentations
         $this->employe = $employe;
         return $this;
     }
+
+    
+
+    
 }

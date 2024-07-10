@@ -14,6 +14,8 @@ final class UtilisateursCrudControllerTest extends AbstractCrudTestCase
     use DatabaseTrait;
     use UserLoginTrait;
 
+    private $passwordHasher;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,7 +54,7 @@ final class UtilisateursCrudControllerTest extends AbstractCrudTestCase
 
 
         // Success - le login est réussi
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm('Se connecter', [
             '_username' => 'email.admin@example.com',
             '_password' => 'password',
         ]);

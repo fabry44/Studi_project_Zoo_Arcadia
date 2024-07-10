@@ -1,0 +1,28 @@
+{# Ajout de liens vers les fiches des animaux dans le tableau de bord de l'utilisateurs #}
+
+{# Récupération du dashboard pour les liens #}
+{% set dynamicPath = field.getCustomOption('dashboard') %}
+
+{# Si la valeur du champ est un tableau, on affiche un lien pour chaque animal #}
+{% if field.value is iterable %}
+
+    {% for animal in field.value %}
+        <a href="{{ path(dynamicPath, {
+            crudAction: 'detail',
+            crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\AnimauxCrudController',        
+            entityId: animal.id
+        }) }}">
+            {{ animal.prenom }}
+        </a><br>
+    {% endfor %}
+
+{# Sinon, on affiche un lien pour l'animal #}
+{% else %}
+    <a href="{{ path(dynamicPath, {
+        crudAction: 'detail',
+        crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\AnimauxCrudController',        
+        entityId: field.value.id
+    }) }}">
+        {{ field.value.prenom }}
+    </a><br>
+{% endif %}

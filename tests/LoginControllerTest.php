@@ -50,7 +50,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm('Se connecter', [
             '_username' => 'doesNotExist@example.com',
             '_password' => 'password',
         ]);
@@ -65,7 +65,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm('Se connecter', [
             '_username' => 'email.employe@example.com',
             '_password' => 'bad-password',
         ]);
@@ -77,7 +77,7 @@ class LoginControllerTest extends WebTestCase
         self::assertSelectorTextContains('.alert-danger', 'Identifiants invalides.');
 
         // Success - le login est réussi
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm('Se connecter', [
             '_username' => 'email.admin@example.com',
             '_password' => 'password',
         ]);
