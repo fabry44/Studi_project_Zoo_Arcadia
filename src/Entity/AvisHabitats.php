@@ -15,11 +15,11 @@ class AvisHabitats
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $date = null;
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $avis = null;
-
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date_avis = null;
 
     #[ORM\ManyToOne(inversedBy: 'avisHabitats')]
     private ?Habitats $habitat = null;
@@ -40,17 +40,6 @@ class AvisHabitats
     public function setAvis(string $avis): self
     {
         $this->avis = $avis;
-        return $this;
-    }
-
-    public function getDateAvis(): ?\DateTimeImmutable
-    {
-        return $this->date_avis;
-    }
-
-    public function setDateAvis(\DateTimeImmutable $date_avis): self
-    {
-        $this->date_avis = $date_avis;
         return $this;
     }
 
@@ -79,5 +68,17 @@ class AvisHabitats
     public function __toString(): string
     {
         return $this->avis;
+    }
+
+    public function getDate(): ?\DateTimeImmutable
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeImmutable $date): static
+    {
+        $this->date = $date;
+
+        return $this;
     }
 }

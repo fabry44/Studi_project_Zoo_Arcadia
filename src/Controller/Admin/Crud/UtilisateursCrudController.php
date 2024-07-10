@@ -6,22 +6,17 @@ use App\Entity\Utilisateurs;
 use App\Repository\UtilisateursRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
 use App\Security\EmailVerifier;
 
 
@@ -59,11 +54,18 @@ class UtilisateursCrudController extends AbstractCrudController
             TextField::new('nom'),
             TextField::new('prenom'),
             TextField::new('password')
-                ->onlyOnForms()
                 ->setFormTypeOptions([
                     'required' => true,
                     'mapped' => true,
-                ]),
+                ])
+                ->onlyWhenCreating(),
+            TextField::new('password')
+                ->setFormTypeOptions([
+                    'required' => true,
+                    'mapped' => true,
+                ])
+                ->onlyWhenCreating(),
+            // TODO: Reset password and password confirmation
             // TextField::new('passwordConfirmation')
             //     ->onlyOnForms()
             //     ->setFormTypeOptions([
@@ -94,8 +96,6 @@ class UtilisateursCrudController extends AbstractCrudController
                 ->hideOnForm(),
         ];
 
-        // Ajoutez cette logique pour adapter le champ selon le contexte
-       
         $user = $this->getContext()->getEntity()->getInstance();
             // dump($user->getRoles());
         if ($pageName === Crud::PAGE_EDIT) {
@@ -119,6 +119,10 @@ class UtilisateursCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {   
+        /**
+         * Cette ligne de code crée une nouvelle action "delete" pour empêcher la suppression d'un utilisateur ayant le rôle ROLE_ADMIN
+         */
+       
         $deleteAction = Action::new('delete')
             ->linkToCrudAction(Crud::PAGE_DETAIL)
             ->displayIf(function (Utilisateurs $user) {
@@ -147,19 +151,40 @@ class UtilisateursCrudController extends AbstractCrudController
                     $user = $this->getContext()->getEntity()->getInstance();
                     return $user instanceof Utilisateurs && !in_array('ROLE_ADMIN', $user->getRoles());
                 });
-            });
+            })
+            ->setPermission(Action::NEW, 'ROLE_ADMIN')
+            ->setPermission(Action::EDIT, 'ROLE_ADMIN')
+            ->setPermission(Action::DELETE, 'ROLE_ADMIN');
+
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setPageTitle('index', 'Gestion des Utilisateurs')
+            ->setPageTitle('new', 'Créer un nouvel Utilisateur')
+            ->setPageTitle('edit', 'Modifier un Utilisateur')
+            ->setPageTitle('detail', 'Détails de l\'Utilisateur')
+        ;
+    }
+
+    /**
+    * Envoie un email de vérification à l'utilisateur.
+     *
+     * @param int $id
+     * @param UtilisateursRepository $utilisateursRepository
+     * @return Response
+     */
     public function verifyEmail(int $id, UtilisateursRepository $utilisateursRepository): Response
     {
-        
+        // Find the user by id
         $user = $utilisateursRepository->find($id);
         if (!$user) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
             return $this->redirectToRoute('admin_dashboard');
         }
 
-        // Logique pour vérifier l'utilisateur
+        // Logic to send verification email
         $email = (new TemplatedEmail())
             ->from(new Address('contact@zoo-arcadia.com', 'Support Zoo Arcadia'))
             ->to($user->getUsername())

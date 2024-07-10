@@ -1,0 +1,43 @@
+{# templates/admin/fields/employe/animal_form.html.twig #}
+{% extends "@EasyAdmin/crud/form_theme.html.twig" %}
+{% block _Alimentations_custom_animal_widget %}
+    <div class="form-group">
+        <label for="{{ field.value.id }}">{{ field.value.prenom }}</label>
+        <select id="{{ field.value.id }}" name="{{ field.value.prenom }}" class="form-control">
+            {% for choice in field.value %}
+                <option value="{{ choice.value }}" {% if choice.value == field.value %}selected{% endif %}>
+                    {{ choice.prenom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% if field.value %}
+        
+        <h4>Rapports Vétérinaires pour {{ field.value.prenom }}</h4>
+        <ul>
+            {% set latestRapport = null %}
+            {% for rapport in field.value.rapportsVeterinaires %}
+                {% if latestRapport is null or rapport.date > latestRapport.date %}
+                    {% set latestRapport = rapport %}
+                {% endif %}
+            {% endfor %}
+
+            {% if latestRapport %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Rapport du Vétérinaire : {{ latestRapport.veterinaire.prenom }} {{ latestRapport.veterinaire.nom }}</h5>
+                        <p class="card-text">
+                            <strong>Date :</strong> {{ latestRapport.date ? latestRapport.date|date('d/m/Y H:i') : '' }}<br>
+                            <strong>État :</strong> {{ latestRapport.etat }}<br>
+                            <strong>Nourriture :</strong> {{ latestRapport.nourriture }}<br>
+                            <strong>Grammage :</strong> {{ latestRapport.grammage }} g<br>
+                            <strong>Détails :</strong> {{ latestRapport.detail }}
+                        </p>
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucun rapport vétérinaire disponible.</p>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% endblock %}

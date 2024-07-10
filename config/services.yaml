@@ -44,7 +44,12 @@ services:
             $emailVerifier: '@App\Security\EmailVerifier'
         tags:
             - { name: 'kernel.event_subscriber' }
-              
+
+
+    App\Controller\Admin\Crud\AlimentationsCrudController:
+        arguments:
+            $security: '@security.helper'
+                  
     # App\Service\SetImageService:
     #     arguments:
     #         $dsn: '%database.dsn%'

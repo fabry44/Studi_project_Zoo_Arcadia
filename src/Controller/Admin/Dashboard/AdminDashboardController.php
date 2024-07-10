@@ -14,14 +14,11 @@ use App\Entity\Animaux;
 use App\Entity\Habitats;
 use App\Entity\Services;
 use App\Entity\RapportsVeterinaires;
-use App\Entity\Alimentations;
-use App\Entity\Avis;
-use App\Entity\AvisHabitats;
 use Symfony\Component\Security\Core\User\UserInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
-
-
+use App\Controller\Admin\Crud\AlimentationsCrudController;
+use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
+use App\Entity\AvisHabitats;
 
 class AdminDashboardController extends AbstractDashboardController
 {
@@ -47,7 +44,7 @@ class AdminDashboardController extends AbstractDashboardController
             
             }else {
 
-                this->addFlash('error', 'Vous n\'avez pas les droits pour accéder à cette page. Connectez-vous avec un compte ayant les droits nécessaires.');
+                $this->addFlash('error', 'Vous n\'avez pas les droits pour accéder à cette page. Connectez-vous avec un compte ayant les droits nécessaires.');
                 return $this->redirect('app_login');
             }
         }
@@ -66,14 +63,24 @@ class AdminDashboardController extends AbstractDashboardController
     {
         // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         // yield MenuItem::linkToUrl('Back to the website', 'fa fa-home', '/');
-        yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', Utilisateurs::class)
-            ->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Services', 'fa fa-store', Services::class);
-        yield MenuItem::linkToCrud('Habitats', 'fa fa-leaf', Habitats::class);
-        yield MenuItem::linkToCrud('Animaux', 'fa fa-paw', Animaux::class);
-        yield MenuItem::linkToCrud('Rapport Veterinaire ', 'fas fa-file-circle-check', RapportsVeterinaires::class);
+        yield MenuItem::linkToCrud('Gestion des utilisateurs', 'fa fa-user', Utilisateurs::class);
+      
+        yield MenuItem::linkToCrud('Gestion des services', 'fa fa-store', Services::class);
+            
+        yield MenuItem::subMenu('Section Habitats', 'fa fa-store')->setSubItems([
+            MenuItem::linkToCrud('Gestion des Habitats', 'fa fa-leaf', Habitats::class),
+            MenuItem::linkToCrud('Suivi des Avis ', 'fa fa-leaf', AvisHabitats::class),
+        ]);
+        
+        yield MenuItem::subMenu('Section Animalerie', 'fa fa-store')->setSubItems([
+            MenuItem::linkToCrud('Gestion des animaux', 'fa fa-paw', Animaux::class),
+            MenuItem::linkToCrud('Rapports Veterinaires ', 'fa fa-file-circle-check', RapportsVeterinaires::class),
+        ]);
+        
+            
 
     }
+    
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         // Usually it's better to call the parent method because that gives you a
@@ -84,14 +91,13 @@ class AdminDashboardController extends AbstractDashboardController
             ->setName($user->getPrenom() . ' ' . $user->getNom())
             // use this method if you don't want to display the name of the user
             ->displayUserName(true)
-
             // you can return an URL with the avatar image
             // ->setAvatarUrl('https://...')
             // ->setAvatarUrl($user->getProfileImageUrl())
             // use this method if you don't want to display the user image
-            ->displayUserAvatar(true)
+            ->displayUserAvatar(false)
             // you can also pass an email address to use gravatar's service
-            ->setGravatarEmail($user->getUserName())
+            // ->setGravatarEmail($user->getUserName())
 
             // you can use any type of menu item, except submenus
             ->addMenuItems([
@@ -100,8 +106,7 @@ class AdminDashboardController extends AbstractDashboardController
                 ->setAction('detail')
                 ->setEntityId($this->getUser()->getId()),
 
-                MenuItem::section(),
-                MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
+                
             
             ]);
     }

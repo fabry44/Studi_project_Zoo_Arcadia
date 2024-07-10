@@ -1,0 +1,7 @@
+<a href="{{ path('employe_dashboard', {
+    crudAction: 'detail',
+    crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\AnimauxCrudController',        
+    entityId: field.value.id
+}) }}">
+    {{ field.value.prenom }} -> voir la fiche
+</a><br>

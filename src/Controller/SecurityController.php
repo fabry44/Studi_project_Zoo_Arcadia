@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
             'password_label' => 'Your password',
 
             // the label displayed for the Sign In form button (the |trans filter is applied to it)
-            'sign_in_label' => 'Log in',
+            'sign_in_label' => 'Se connecter',
 
             // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
             'username_parameter' => '_username',
@@ -89,6 +89,8 @@ class SecurityController extends AbstractController
 
             // the label displayed for the remember me checkbox (the |trans filter is applied to it)
             'remember_me_label' => 'Remember me',
+
+            'setLocales' => "(['fr'])",
         ]);
     }
 
