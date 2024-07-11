@@ -161,7 +161,7 @@ class AnimauxCrudController extends AbstractCrudController
             'crudControllerFqcn' => RapportsVeterinairesCrudController::class,
             'entityFqcn' => RapportsVeterinaires::class,
             'query' => '',
-            'habitatId' => $animal->getId(),  
+            'animalId' => $animal->getId(),  
             'userId' => $userId,             
         ]);
     }
