@@ -5,6 +5,7 @@ namespace App\Controller\Admin\Crud;
 use App\Entity\AvisHabitats;
 use App\Entity\Habitats;
 use App\Entity\Utilisateurs;
+use App\Filter\VeterinaireRoleFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
@@ -140,7 +141,7 @@ class AvisHabitatsCrudController extends AbstractCrudController
     {
         return $filters
             ->add('date')
-            ->add('veterinaire')
+            ->add(VeterinaireRoleFilter::new('veterinaire', 'Filtrer par Vétérinaire'))
             ->add('habitat')
         ;
     }

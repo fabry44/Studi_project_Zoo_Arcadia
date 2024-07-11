@@ -35,8 +35,9 @@ class RapportsVeterinaires
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateurs $veterinaire = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
+
 
     public function getId(): ?int
     {

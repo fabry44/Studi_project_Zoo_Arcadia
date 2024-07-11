@@ -5,9 +5,10 @@ namespace App\Controller\Admin\Crud;
 use App\Entity\Animaux;
 use App\Entity\RapportsVeterinaires;
 use App\Entity\Utilisateurs;
+use App\Filter\VeterinaireRoleFilter;
+use App\Form\Type\VeterinaireRoleFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -16,7 +17,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -27,12 +27,14 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
     private $security;
     private $requestStack;
     private $entityManager;
+    private $UtilisateursRepository;
 
     public function __construct(RequestStack $requestStack, Security $security, EntityManagerInterface $entityManager)
     {
         $this->security = $security;
         $this->requestStack = $requestStack;
         $this->entityManager = $entityManager;
+        $this->UtilisateursRepository = $entityManager->getRepository(Utilisateurs::class);
     }
 
     public static function getEntityFqcn(): string
@@ -169,11 +171,13 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
     }
 
     public function configureFilters(Filters $filters): Filters
-    {
+    {   
+        
         return $filters
             ->add('animal')
-            ->add('date') //TODO : à revoir filtre
-            ->add('veterinaire')//TODO : à revoir filtre
+            ->add('date') 
+            ->add(VeterinaireRoleFilter::new('veterinaire', 'Filtrer par Vétérinaire'))
+            
         ;
     }
 
@@ -197,8 +201,9 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
     {
         $rapportVeterinaire = new RapportsVeterinaires();
         $request = $this->container->get('request_stack')->getCurrentRequest();
-        $animalId = $request->query->get('habitatId');
+        $animalId = $request->query->get('animalId');
         $userId = $request->query->get('userId');
+        $currentDateTime = new \DateTimeImmutable();
 
         if ($animalId) {
             $animal = $this->entityManager->getRepository(Animaux::class)->find($animalId);
@@ -208,6 +213,7 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
             $user = $this->entityManager->getRepository(Utilisateurs::class)->find($userId);
             $rapportVeterinaire->setVeterinaire($user);
         }
+        $rapportVeterinaire->setDate($currentDateTime);
 
         return $rapportVeterinaire;
     }

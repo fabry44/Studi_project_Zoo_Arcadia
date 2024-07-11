@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AlimentationsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AlimentationsRepository::class)]
@@ -14,7 +15,7 @@ class Alimentations
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: "datetime_immutable")]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 255)]
