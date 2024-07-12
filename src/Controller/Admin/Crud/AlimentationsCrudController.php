@@ -18,6 +18,7 @@ use App\Entity\Utilisateurs;
 use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\extractDashboardService;
 
 class AlimentationsCrudController extends AbstractCrudController
 {   
@@ -25,13 +26,15 @@ class AlimentationsCrudController extends AbstractCrudController
     private $entityManager;
     private $AnimauxRepository;
     private $requestStack;
+    private $extractDashboardService;
 
-    public function __construct(Security $security, EntityManagerInterface $entityManager, RequestStack $requestStack)
+    public function __construct(Security $security, EntityManagerInterface $entityManager, RequestStack $requestStack, extractDashboardService $extractDashboardService)
     {
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->AnimauxRepository = $entityManager->getRepository(Animaux::class);
         $this->requestStack = $requestStack;
+        $this->extractDashboardService = $extractDashboardService;
     }
     
     public static function getEntityFqcn(): string
@@ -48,7 +51,7 @@ class AlimentationsCrudController extends AbstractCrudController
         $currentPath = $this->requestStack->getCurrentRequest();
 
         // Analyse du chemin pour identifier le tableau de bord
-        $dashboard = $this->extractDashboardFromPath($currentPath);
+        $dashboard = $this->extractDashboardService->extractDashboardFromPath($currentPath);
 
         // Récupération de la date et de l'heure actuelles immutables
         $currentDateTime = new \DateTimeImmutable();
@@ -63,11 +66,11 @@ class AlimentationsCrudController extends AbstractCrudController
                 ->onlyOnIndex(),
             DateField::new('date')
                 ->setLabel('Date')
-                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setFormat('dd-MM-yyyy')
                 ->hideOnIndex(),
             DateField::new('date')
                 ->setLabel('Date')
-                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setFormat('dd-MM-yyyy')
                 ->setFormTypeOptions([
                     'data' => $currentDateTime,
                     'disabled' => true,
@@ -82,22 +85,30 @@ class AlimentationsCrudController extends AbstractCrudController
                 ->onlyOnIndex(),  
             TextField::new('employe')
                 ->setLabel('Employé')
+                ->setRequired(true)
                 ->setFormTypeOptions([
                     'data' => $loginUser,
                     'disabled' => true,
                 ]),
-
-            AssociationField::new('animal')
+            TextField::new('animal')
                 ->setLabel('Animal')
-                ->setCrudController(AnimauxCrudController::class)
+                ->setRequired(true)
+                ->setFormTypeOptions([
+                    'disabled' => true,
+                ]),
+            // AssociationField::new('animal')
+            //     ->setLabel('Animal')
+            //     ->setCrudController(AnimauxCrudController::class)
 
-                ->setTemplatePath('admin/crud/fields/links/animal_links.html.twig')
-                ,
+            //     ->setTemplatePath('admin/crud/fields/links/animal_links.html.twig')
+            //     ,
 
             TextField::new('nourriture')
+                ->setRequired(true)
                 ->setLabel('Alimentation'), 
 
             NumberField::new('quantite')
+                ->setRequired(true)
                 ->setLabel('Quantité (g)'),
 
         ];
@@ -152,21 +163,4 @@ class AlimentationsCrudController extends AbstractCrudController
 
         return $alimentation;
     }
-
-    /**
-     * Extrait le tableau de bord à partir du chemin donné.
-     *
-     * @param string $path Le chemin à analyser.
-     * @return string|null Le tableau de bord extrait ou null si aucun tableau de bord n'est trouvé.
-     */
-    private function extractDashboardFromPath(string $path): ?string
-    {
-        $pattern = '/\/(admin|veterinaire|employe)-dashboard/';
-        if (preg_match($pattern, $path, $matches)) {
-            return $matches[1] . '_dashboard'; // retourne 'admin_dashboard', 'veterinaire_dashboard', etc.
-        }
-
-        return null; // ou une valeur par défaut si nécessaire
-    }
-
 }

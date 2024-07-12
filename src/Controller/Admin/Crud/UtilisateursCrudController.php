@@ -50,19 +50,31 @@ class UtilisateursCrudController extends AbstractCrudController
 
         $fields = [
             IdField::new('id')->onlyOnIndex(),
-            EmailField::new('username'),
-            TextField::new('nom'),
-            TextField::new('prenom'),
+
+            EmailField::new('username')
+                ->setLabel('Email')
+                ->setRequired(true),
+
+            TextField::new('nom')
+                ->setLabel('Nom')
+                ->setRequired(true),
+            
+            TextField::new('prenom')
+                ->setLabel('Prénom')
+                ->setRequired(true),
             TextField::new('password')
+                ->setLabel('Mot de passe')
+                ->setRequired(true)
                 ->setFormTypeOptions([
                     'required' => true,
                     'mapped' => true,
                 ])
                 ->onlyWhenCreating(),
-            TextField::new('password')
+            TextField::new('passwordConfirmation')
+                ->setLabel('Confirmation du mot de passe')
                 ->setFormTypeOptions([
                     'required' => true,
-                    'mapped' => true,
+                    'mapped' => false,
                 ])
                 ->onlyWhenCreating(),
             // TODO: Reset password and password confirmation
@@ -73,14 +85,20 @@ class UtilisateursCrudController extends AbstractCrudController
             //         'required' => true,
             //     ]),
             ChoiceField::new('roles')
+                ->setLabel('Rôles')
+                ->setRequired(true)
                 ->setChoices([
                     'Employé' => 'ROLE_EMPLOYE',
                     'Vétérinaire' => 'ROLE_VETERINAIRE',
                 ])
-                ->allowMultipleChoices(true)
+                ->setFormTypeOptions([
+                    'required' => true,
+                ])
+                ->allowMultipleChoices(false)
                 ->renderExpanded(true)
                 ->onlyOnForms(),
             ArrayField::new('roles')
+                ->setLabel('Rôles')
                 ->formatValue(function ($value) use ($roles, $rolesBadges) {
                     $badges = array_map(function ($role) use ($roles, $rolesBadges) {
                         $roleName = array_search($role, $roles);
@@ -92,6 +110,7 @@ class UtilisateursCrudController extends AbstractCrudController
                 })
                 ->hideOnForm(),
             BooleanField::new('isVerified')
+                ->setLabel('Email vérifié')
                 ->renderAsSwitch(false)
                 ->hideOnForm(),
         ];
@@ -99,10 +118,12 @@ class UtilisateursCrudController extends AbstractCrudController
         $user = $this->getContext()->getEntity()->getInstance();
             // dump($user->getRoles());
         if ($pageName === Crud::PAGE_EDIT) {
-            $fields[] = BooleanField::new('isVerified')                
+            $fields[] = BooleanField::new('isVerified')
+                ->setLabel('Email vérifié')                
                 ->setFormTypeOption('disabled', true);
             if (in_array('ROLE_ADMIN', $user->getRoles())) {
                 $fields[] = ChoiceField::new('roles')
+                ->setLabel('Rôles')
                 ->setChoices([
                     'Employé' => 'ROLE_EMPLOYE',
                     'Vétérinaire' => 'ROLE_VETERINAIRE',
@@ -131,21 +152,26 @@ class UtilisateursCrudController extends AbstractCrudController
         
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)     
-            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)       
+            ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
+
             ->add(Crud::PAGE_INDEX, Action::new('verifyEmail', 'Vérifier Email')
             ->linkToRoute('verify_email', function (Utilisateurs $user) {
                 return ['id' => $user->getId()];
             })
-            ->addCssClass('btn btn-success'))
+            ->addCssClass('btn btn-primary'))
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-                return $action->setIcon('fa fa-user-plus')->addCssClass('btn btn-success');
+                return $action->setIcon('fa fa-user-plus')->addCssClass('btn btn-primary')->setLabel('Nouvel Utilisateur');
             })
+
             // Supprimer l'action de suppression sur la page INDEX
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
+
             // Supprimer l'action de suppression sur la page DETAIL
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+
             // Configurer l'action de suppression sur la page d'édition avec conditions  !'ROLE_ADMIN' == $user->getRoles()
             ->add(Crud::PAGE_EDIT, Action::DELETE)
+
             ->update(Crud::PAGE_EDIT, Action::DELETE, function (Action $action) {
                 return $action->displayIf(function () {
                     $user = $this->getContext()->getEntity()->getInstance();

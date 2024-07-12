@@ -18,7 +18,9 @@ use App\Entity\Utilisateurs;
 use App\Entity\Animaux;
 use App\Entity\Habitats;
 use App\Entity\RapportsVeterinaires;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_VETERINAIRE')]
 class VeterinaireDashboardController extends AbstractDashboardController
 {
     #[Route('/veterinaire-dashboard', name: 'veterinaire_dashboard')]

@@ -19,7 +19,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use App\Controller\Admin\Crud\AlimentationsCrudController;
 use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
 use App\Entity\AvisHabitats;
+use App\Entity\ImgAnimaux;
+use App\Entity\ImgHabitats;
+use App\Entity\ImgServices;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class AdminDashboardController extends AbstractDashboardController
 {
     #[Route('/admin-dashboard', name: 'admin_dashboard')]
@@ -64,20 +69,23 @@ class AdminDashboardController extends AbstractDashboardController
         // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         // yield MenuItem::linkToUrl('Back to the website', 'fa fa-home', '/');
         yield MenuItem::linkToCrud('Gestion des utilisateurs', 'fa fa-user', Utilisateurs::class);
-      
-        yield MenuItem::linkToCrud('Gestion des services', 'fa fa-store', Services::class);
+        
+        yield MenuItem::subMenu('Section Service', 'fa fa-store')->setSubItems([
+            MenuItem::linkToCrud('Gestion des services', 'fa fa-store', Services::class),
+            MenuItem::linkToCrud('Photos ', 'fa fa-images', ImgServices::class),
+        ]);  
             
         yield MenuItem::subMenu('Section Habitats', 'fa fa-store')->setSubItems([
             MenuItem::linkToCrud('Gestion des Habitats', 'fa fa-leaf', Habitats::class),
             MenuItem::linkToCrud('Suivi des Avis ', 'fa fa-leaf', AvisHabitats::class),
+            MenuItem::linkToCrud('Photos ', 'fa fa-images', ImgHabitats::class),
         ]);
         
-        yield MenuItem::subMenu('Section Animalerie', 'fa fa-store')->setSubItems([
+        yield MenuItem::subMenu('Section Animalerie', 'fa fa-paw')->setSubItems([
             MenuItem::linkToCrud('Gestion des animaux', 'fa fa-paw', Animaux::class),
             MenuItem::linkToCrud('Rapports Veterinaires ', 'fa fa-file-circle-check', RapportsVeterinaires::class),
-        ]);
-        
-            
+            MenuItem::linkToCrud('Photos ', 'fa fa-images', ImgAnimaux::class),
+        ]);           
 
     }
     

@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\SecurityBundle\Security;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\extractDashboardService;
 
 class RapportsVeterinairesCrudController extends AbstractCrudController
 {   
@@ -28,13 +29,15 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
     private $requestStack;
     private $entityManager;
     private $UtilisateursRepository;
+    private $extractDashboardService;
 
-    public function __construct(RequestStack $requestStack, Security $security, EntityManagerInterface $entityManager)
+    public function __construct(RequestStack $requestStack, Security $security, EntityManagerInterface $entityManager, extractDashboardService $extractDashboardService)
     {
         $this->security = $security;
         $this->requestStack = $requestStack;
         $this->entityManager = $entityManager;
         $this->UtilisateursRepository = $entityManager->getRepository(Utilisateurs::class);
+        $this->extractDashboardService = $extractDashboardService;
     }
 
     public static function getEntityFqcn(): string
@@ -51,7 +54,7 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
         $currentPath = $this->requestStack->getCurrentRequest();
 
         // Analyse du chemin pour identifier le tableau de bord
-        $dashboard = $this->extractDashboardFromPath($currentPath);
+        $dashboard = $this->extractDashboardService->extractDashboardFromPath($currentPath);
 
         // Récupération de la date et de l'heure actuelles immutables
         $currentDateTime = new \DateTimeImmutable();
@@ -72,7 +75,7 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
                 ->onlyOnIndex(),
             DateField::new('date')
                 ->setLabel('Date')
-                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setFormat('dd-MM-yyyy')
                 ->setFormTypeOptions([
                     'data' => $currentDateTime,
                     'disabled' => true,
@@ -80,7 +83,7 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
                 ->onlyWhenCreating(),
             DateField::new('date')
                 ->setLabel('Date')
-                ->setFormat('dd-MM-yyyy HH:mm')
+                ->setFormat('dd-MM-yyyy')
                 ->setFormTypeOptions([
                     'disabled' => true,
                 ])
@@ -149,6 +152,11 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
 
+            // Mise a jours du bouton NEW
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+            return $action->setIcon('fa fa-file-circle-check')->setLabel('Nouveau rapport')->addCssClass('btn btn-primary');
+            })
+
             // Supprimer l'action de suppression sur la page INDEX
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
 
@@ -216,21 +224,5 @@ class RapportsVeterinairesCrudController extends AbstractCrudController
         $rapportVeterinaire->setDate($currentDateTime);
 
         return $rapportVeterinaire;
-    }
-
-    /**
-     * Extrait le tableau de bord à partir du chemin donné.
-     *
-     * @param string $path Le chemin à analyser.
-     * @return string|null Le tableau de bord extrait ou null si aucun tableau de bord n'est trouvé.
-     */
-    private function extractDashboardFromPath(string $path): ?string
-    {
-        $pattern = '/\/(admin|veterinaire|employe)-dashboard/';
-        if (preg_match($pattern, $path, $matches)) {
-            return $matches[1] . '_dashboard'; // retourne 'admin_dashboard', 'veterinaire_dashboard', etc.
-        }
-
-        return null; // ou une valeur par défaut si nécessaire
     }
 }

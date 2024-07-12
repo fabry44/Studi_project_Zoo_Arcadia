@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin\Crud;
 
+use App\Controller\Admin\Field\CustomImageField;
 use App\Entity\Alimentations;
 use App\Entity\Animaux;
+use App\Entity\ImgAnimaux;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -15,14 +17,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use App\Entity\RapportsVeterinaires;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\extractDashboardService;
 
 class AnimauxCrudController extends AbstractCrudController
 {   
     private $requestStack;
+    private $extractDashboardService;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, extractDashboardService $extractDashboardService)
     {
         $this->requestStack = $requestStack;
+        $this->extractDashboardService = $extractDashboardService;
     }
 
     public static function getEntityFqcn(): string
@@ -36,17 +41,20 @@ class AnimauxCrudController extends AbstractCrudController
         $currentPath = $this->requestStack->getCurrentRequest();
 
         // Analyse du chemin pour identifier le tableau de bord
-        $dashboard = $this->extractDashboardFromPath($currentPath);
+        $dashboard = $this->extractDashboardService->extractDashboardFromPath($currentPath);
         
 
         return [
             IdField::new('id')->onlyOnIndex(),
             TextField::new('prenom')
+                ->setRequired(true)
                 ->setLabel('Prénom'),
             TextField::new('race')
+                ->setRequired(true)
                 ->setLabel('Race'),
 
             TextField::new('habitat')
+                ->setRequired(true)
                 ->setLabel('Habitat')
                 ->setCustomOptions(['dashboard' => $dashboard])
                 ->setTemplatePath('admin/crud/fields/links/habitats_links.html.twig'),
@@ -65,23 +73,38 @@ class AnimauxCrudController extends AbstractCrudController
                 ->setTemplatePath('admin/crud/fields/show/rapports_veterinaires/show.html.twig')
                 ->setLabel('Rapports Vétérinaires'),
 
+                AssociationField::new('imgAnimaux')
+                    ->setLabel('Nombre d\'images')
+                    ->setCrudController(ImgHabitatsCrudController::class)
+                    ->onlyOnIndex(),
+                CustomImageField::new('imgAnimaux')
+                    ->setLabel('Images de l\'animal')
+                    ->setBasePath('/uploads/animaux')
+                    ->onlyOnDetail(),
+
         ];
     }
 
     public function configureActions(Actions $actions): Actions
     {   
-        // Création de l'objet action "Nourrir Animal"
+        // Création du bouton action "Nourrir Animal"
         $nourrirAnimal = Action::new('nourrirAnimal', 'Nourrir Animal', 'fa fa-utensils')
             ->linkToCrudAction('nourrirAnimal')
-            ->addCssClass('btn btn-info')
+            ->addCssClass('btn btn-primary')
             ->setHtmlAttributes(['title' => 'Nourrir cet animal']);
         
 
-            // Création de l'objet action "Faire un rapport"
+            // Création du bouton action "Faire un rapport"
         $Rapport = Action::new('faireRapport', 'Faire un rapport', 'fa fa-folder-plus')
             ->linkToCrudAction('faireRapport')
-            ->addCssClass('btn btn-info')
+            ->addCssClass('btn btn-primary')
             ->setHtmlAttributes(['title' => 'Faire un rapport']);
+        
+        // Création du bouton action "Ajouter une photo"
+        $ajouterPhotos = Action::new('ajouterPhotos', 'Ajouter une photo', 'fa fa-picture-o')
+            ->linkToCrudAction('ajouterPhotos')
+            ->addCssClass('btn btn-primary')
+            ->setHtmlAttributes(['title' => 'Ajouter une photo']);
       
         return $actions
             // ...
@@ -89,6 +112,11 @@ class AnimauxCrudController extends AbstractCrudController
 
             // Supprimer l'action de suppression sur la page INDEX
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
+
+            // Mise a jours du bouton NEW
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+            return $action->setIcon('fa fa-paw')->setLabel('Nouvel animal')->addCssClass('btn btn-primary');
+            })
 
             // Autoriser l'action de suppression uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN
             ->setPermission(Action::DELETE, 'ROLE_ADMIN')
@@ -110,7 +138,9 @@ class AnimauxCrudController extends AbstractCrudController
             
             ->add(Crud::PAGE_DETAIL, $Rapport)
             ->setPermission('faireRapport', 'ROLE_VETERINAIRE')
-            
+
+            ->add(Crud::PAGE_DETAIL, $ajouterPhotos)
+            ->setPermission('ajouterPhotos', 'ROLE_ADMIN')
             
         ;
     }
@@ -166,19 +196,22 @@ class AnimauxCrudController extends AbstractCrudController
         ]);
     }
 
-
     /**
-     * Extrait le tableau de bord à partir du chemin donné.
+     * Redirige vers la page de création d'une nouvelle image de l'animal.
      *
-     * @param string $path Le chemin à analyser.
-     * @return string|null Le tableau de bord extrait ou null si aucun tableau de bord n'est trouvé.
+     * @param AdminContext $context Le contexte administratif.
+     * @return RedirectResponse La réponse de redirection vers la page de création.
      */
-    private function extractDashboardFromPath(string $path): ?string
+    public function ajouterPhotos(AdminContext $context)
     {
-        $pattern = '/\/(admin|veterinaire|employe)-dashboard/';
-        if (preg_match($pattern, $path, $matches)) {
-            return $matches[1] . '_dashboard'; // retourne 'admin_dashboard', 'veterinaire_dashboard', etc.
-        }
+        $animal = $context->getEntity()->getInstance();  
+        
+        return $this->redirectToRoute('admin_dashboard', [
+            'crudAction' => 'new',
+            'crudControllerFqcn' => ImgAnimauxCrudController::class,
+            'entityFqcn' => ImgAnimaux::class,
+            'query' => '',
+            'animalId' => $animal->getId(),             
+        ]);
     }
-
 }

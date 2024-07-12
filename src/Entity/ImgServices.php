@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ImgAnimauxRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\ImgServicesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: ImgAnimauxRepository::class)]
-#[ORM\Table(name:"img_animaux")] // nom exact de la table
+#[ORM\Entity(repositoryClass: ImgServicesRepository::class)]
+#[ORM\Table(name:"img_services")] // nom exact de la table
 #[Vich\Uploadable]
-class ImgAnimaux
+class ImgServices
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,29 +18,30 @@ class ImgAnimaux
     private ?int $id = null;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
-    #[Vich\UploadableField(mapping: 'imgAnimaux', fileNameProperty: 'imageName')]// TODO:pas de verification size pour le moment
+    #[Vich\UploadableField(mapping: 'imgServices', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
 
-    #[ORM\ManyToOne(inversedBy: 'imgAnimaux')]
+
+    #[ORM\ManyToOne(inversedBy: 'imgServices')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Animaux $animal = null;
+    private ?Services $services = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAnimal(): ?Animaux
+    public function getservices(): ?services
     {
-        return $this->animal;
+        return $this->services;
     }
 
-    public function setAnimal(?Animaux $animal): self
+    public function setservices(?services $services): self
     {
-        $this->animal = $animal;
+        $this->services = $services;
 
         return $this;
     }
@@ -65,11 +65,4 @@ class ImgAnimaux
     {
         return $this->imageName;
     }
-
-    public function __toString(): string
-    {
-        return $this->animal;
-    }
 }
-
-

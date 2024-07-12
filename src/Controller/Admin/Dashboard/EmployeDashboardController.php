@@ -19,10 +19,10 @@ use App\Entity\Animaux;
 use App\Controller\Admin\Crud\UtilisateursCrudController;
 use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
 use App\Controller\Admin\Crud\AlimentationsCrudController;
+use App\Entity\ImgServices;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
-
-
+#[IsGranted('ROLE_EMPLOYE')]
 class EmployeDashboardController extends AbstractDashboardController
 {
     #[Route('/employe-dashboard', name: 'employe_dashboard')]
@@ -63,10 +63,15 @@ class EmployeDashboardController extends AbstractDashboardController
         // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         // yield MenuItem::linkToUrl('Back to the website', 'fa fa-home', '/');
         yield MenuItem::linkToCrud('Gestion des Avis', 'fa fa-user', Avis::class);
-        yield MenuItem::linkToCrud('Gestion des Services', 'fa fa-store', Services::class);
+        
+        yield MenuItem::subMenu('Section Service', 'fa fa-store')->setSubItems([
+            MenuItem::linkToCrud('Gestion des services', 'fa fa-store', Services::class),
+            MenuItem::linkToCrud('Photos ', 'fa fa-images', ImgServices::class),
+        ]);  
         yield MenuItem::linkToCrud('Rations alimentaires', 'fa fa-bowl-food', Alimentations::class);
         // yield MenuItem::linkToCrud('Rapport Veterinaire ', 'fas fa-file-circle-check', RapportsVeterinaires::class)
         //     ->setPermission('ROLE_EMPLOYE');
+
         yield MenuItem::linkToCrud('Gestion des Animaux', 'fa fa-paw', Animaux::class);
             
     }

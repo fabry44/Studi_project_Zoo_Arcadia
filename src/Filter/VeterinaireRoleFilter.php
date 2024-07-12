@@ -24,6 +24,14 @@ class VeterinaireRoleFilter implements FilterInterface
             ->setFormType(VeterinaireRoleFilterType::class);
     }
 
+    /**
+     * Applique le filtre à la requête.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param FilterDataDto $filterDataDto
+     * @param FieldDto|null $fieldDto
+     * @param EntityDto $entityDto
+     */
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
         $rapportVeterinaireId = $filterDataDto->getValue();
