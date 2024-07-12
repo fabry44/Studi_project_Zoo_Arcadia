@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ServicesRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ServicesRepository::class)]
@@ -20,6 +21,9 @@ class Services
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $descript = null;
+
+    #[ORM\OneToMany(targetEntity: ImgServices::class, mappedBy: 'services', orphanRemoval: true)]
+    private Collection $imgServices;
 
     public function getId(): ?int
     {
@@ -48,5 +52,36 @@ class Services
         $this->descript = $descript;
 
         return $this;
+    }
+
+    public function getImgServices(): Collection
+    {
+        return $this->imgServices;
+    }
+
+    public function addImgService(ImgServices $imgServices): self
+    {
+        if (!$this->imgServices->contains($imgServices)) {
+            $this->imgServices->add($imgServices);
+            $imgServices->setservices($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImgService(ImgServices $imgServices): self
+    {
+        if ($this->imgServices->removeElement($imgServices)) {
+            if ($imgServices->getservices() === $this) {
+                $imgServices->setservices(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nom;
     }
 }

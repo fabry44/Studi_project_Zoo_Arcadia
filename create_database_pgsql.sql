@@ -78,11 +78,23 @@ CREATE TABLE services (
   descript TEXT NOT NULL
 );
 
+-- Table pour stocker les images des services
+CREATE TABLE img_services (
+  id SERIAL PRIMARY KEY,
+  service_id INT NOT NULL,
+  image_name VARCHAR(255) NOT NULL,
+  -- image_size INT NOT NULL,
+  -- updated_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (service_id) REFERENCES services(id) 
+);
+
 -- Table `img_animaux`
 CREATE TABLE img_animaux (
   id SERIAL PRIMARY KEY,
   animal_id INTEGER NOT NULL,
-  image BYTEA NOT NULL,
+  image_name VARCHAR(255) NOT NULL,
+  -- image_size INT NOT NULL,
+  -- updated_at TIMESTAMP NOT NULL,
   FOREIGN KEY (animal_id) REFERENCES animaux (id)
 );
 
@@ -90,7 +102,9 @@ CREATE TABLE img_animaux (
 CREATE TABLE img_habitats (
   id SERIAL PRIMARY KEY,
   habitat_id INTEGER NOT NULL,
-  image BYTEA NOT NULL,
+  image_name VARCHAR(255) NOT NULL,
+  -- image_size INT NOT NULL,
+  -- updated_at TIMESTAMP NOT NULL,
   FOREIGN KEY (habitat_id) REFERENCES habitats (id)
 );
 

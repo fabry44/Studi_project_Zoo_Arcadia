@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin\Crud;
 
+
 use App\Entity\AvisHabitats;
 use App\Entity\Habitats;
+use App\Entity\ImgHabitats;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -15,14 +17,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\extractDashboardService;
+use App\Controller\Admin\Field\CustomImageField;
+
 
 class HabitatsCrudController extends AbstractCrudController
 {   
     private $requestStack;
+    private $extractDashboardService;  
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, extractDashboardService $extractDashboardService)
     {
         $this->requestStack = $requestStack;
+        $this->extractDashboardService = $extractDashboardService;
     }
 
     public static function getEntityFqcn(): string
@@ -37,7 +44,7 @@ class HabitatsCrudController extends AbstractCrudController
         $currentPath = $this->requestStack->getCurrentRequest();
 
         // Analyse du chemin pour identifier le tableau de bord
-        $dashboard = $this->extractDashboardFromPath($currentPath);
+        $dashboard = $this->extractDashboardService->extractDashboardFromPath($currentPath);
 
         return [
             IdField::new('id')
@@ -46,11 +53,13 @@ class HabitatsCrudController extends AbstractCrudController
 
             TextField::new('nom')
                 ->setLabel('Nom')
+                ->setRequired(true)
                 ->setMaxLength(255)
                 ->setRequired(true),
             
             TextareaField::new('descript')
                 ->setLabel('Description')
+                ->setRequired(true)
                 ->setNumOfRows(10)
                 ->setRequired(true)
                 ->hideOnIndex(),
@@ -73,10 +82,17 @@ class HabitatsCrudController extends AbstractCrudController
             CollectionField::new('avisHabitats')
                 ->setLabel('Avis du Vétérinaire')
                 ->setEntryType(AvisHabitats::class)
-                ->onlyOnDetail()
                 ->setTemplatePath('admin/crud/fields/show/avis_habitats/show.html.twig')
-                ->setLabel('Avis du Vétérinaire'),
-            // ImageField::new('imgHabitats')->hideOnIndex(),
+                ->onlyOnDetail(),
+            
+            AssociationField::new('imgHabitats')
+                ->setLabel('Nombre d\'images')
+                ->setCrudController(ImgHabitatsCrudController::class)
+                ->onlyOnIndex(),
+            CustomImageField::new('imgHabitats')
+                ->setLabel('Images de l\'habitat')
+                ->setBasePath('/uploads/habitats')
+                ->onlyOnDetail(),
            
         ];
     }
@@ -85,20 +101,28 @@ class HabitatsCrudController extends AbstractCrudController
     {   
         /**
          * On crée un objet Action pour donner un avis sur un habitat.
-         * L'action est associée à un bouton "Donner votre Avis" avec une icône de commentaire.
-         * L'action est liée à la fonction "donnerAvis" dans le contrôleur CRUD..
+         * L'action est associée à un bouton "Donner votre Avis".
+         * L'action est liée à la fonction "donnerAvis" dans le contrôleur CRUD
          */
         $avisHabitat = Action::new('donnerAvis', 'Donner votre Avis', 'fa fa-comment')
             ->linkToCrudAction('donnerAvis')
-            ->addCssClass('btn btn-info')
+            ->addCssClass('btn btn-primary')
             ->setHtmlAttributes(['title' => 'Donner votre Avis']);
+
+        $ajouterPhotos = Action::new('ajouterPhotos', 'Ajouter une photo', 'fa fa-picture-o')
+            ->linkToCrudAction('ajouterPhotos')
+            ->addCssClass('btn btn-primary')
+            ->setHtmlAttributes(['title' => 'Ajouter une photo']);
         
         return $actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-
-            // Supprimer l'action de suppression sur la page INDEX
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            // ->remove(Crud::PAGE_INDEX, Action::NEW)
+            
+            // Mise a jours du bouton NEW
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+            return $action->setIcon('fa fa-store')->setLabel('Nouvel habitat')->addCssClass('btn btn-primary');
+            })
 
             // Autoriser l'action de suppression uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN
             ->setPermission(Action::DELETE, 'ROLE_ADMIN')
@@ -106,11 +130,17 @@ class HabitatsCrudController extends AbstractCrudController
             // Autoriser l'action d'édition uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN
             ->setPermission(Action::EDIT, 'ROLE_ADMIN')
 
+            ->add(Crud::PAGE_DETAIL, $avisHabitat)
+            ->setPermission('donnerAvis', 'ROLE_VETERINAIRE')
+
+            ->add(Crud::PAGE_DETAIL, $ajouterPhotos)
+            ->setPermission('ajouterPhotos', 'ROLE_ADMIN')
+
+            // ->add(Crud::PAGE_INDEX, $ajouthabitat) // TODO: changer le label des bouton
+                
             // Autoriser l'action de création uniquement pour les utilisateurs ayant le rôle ROLE_ADMIN
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
 
-            ->add(Crud::PAGE_DETAIL, $avisHabitat)
-            ->setPermission('donnerAvis', 'ROLE_VETERINAIRE')
         ;
     }
 
@@ -147,18 +177,24 @@ class HabitatsCrudController extends AbstractCrudController
     }
 
     /**
-     * Extrait le tableau de bord à partir du chemin donné.
+     * Redirige vers la page de création d'une nouvelle image d'habitat.
      *
-     * @param string $path Le chemin à analyser.
-     * @return string|null Le tableau de bord extrait ou null si aucun tableau de bord n'est trouvé.
+     * @param AdminContext $context Le contexte administratif.
+     * @return RedirectResponse La réponse de redirection vers la page de création.
      */
-    private function extractDashboardFromPath(string $path): ?string
+    public function ajouterPhotos(AdminContext $context)
     {
-        $pattern = '/\/(admin|veterinaire|employe)-dashboard/';
-        if (preg_match($pattern, $path, $matches)) {
-            return $matches[1] . '_dashboard'; // retourne 'admin_dashboard', 'veterinaire_dashboard', etc.
-        }
-
-        return null; // ou une valeur par défaut si nécessaire
+        $habitat = $context->getEntity()->getInstance();  
+        
+        return $this->redirectToRoute('admin_dashboard', [
+            'crudAction' => 'new',
+            'crudControllerFqcn' => ImgHabitatsCrudController::class,
+            'entityFqcn' => ImgHabitats::class,
+            'query' => '',
+            'habitatId' => $habitat->getId(),             
+        ]);
     }
+
+   
+   
 }
