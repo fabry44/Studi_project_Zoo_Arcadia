@@ -54,6 +54,13 @@ services:
     App\Service\extractDashboardService:
         arguments:
             $path: '%kernel.project_dir%/Service'
+    
+    App\Security\Voter\UtilisateursVoter:
+        tags: [security.voter]
+
+    App\EventSubscriber\AccessDeniedSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
                   
     # App\Service\SetImageService:
     #     arguments:

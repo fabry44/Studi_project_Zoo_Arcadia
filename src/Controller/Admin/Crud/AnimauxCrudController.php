@@ -18,16 +18,19 @@ use App\Entity\RapportsVeterinaires;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Service\extractDashboardService;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AnimauxCrudController extends AbstractCrudController
 {   
     private $requestStack;
     private $extractDashboardService;
+    private $authorizationChecker;
 
-    public function __construct(RequestStack $requestStack, extractDashboardService $extractDashboardService)
+    public function __construct(RequestStack $requestStack, extractDashboardService $extractDashboardService, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->requestStack = $requestStack;
         $this->extractDashboardService = $extractDashboardService;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public static function getEntityFqcn(): string

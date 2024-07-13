@@ -24,7 +24,7 @@ use App\Entity\ImgHabitats;
 use App\Entity\ImgServices;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_ADMIN')]
+
 class AdminDashboardController extends AbstractDashboardController
 {
     #[Route('/admin-dashboard', name: 'admin_dashboard')]
