@@ -20,6 +20,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use App\Security\EmailVerifier;
 
 
+
 class UtilisateursCrudController extends AbstractCrudController
 {   
     private $emailVerifier;
@@ -84,19 +85,19 @@ class UtilisateursCrudController extends AbstractCrudController
             //         'mapped' => false,
             //         'required' => true,
             //     ]),
-            ChoiceField::new('roles')
-                ->setLabel('Rôles')
-                ->setRequired(true)
-                ->setChoices([
-                    'Employé' => 'ROLE_EMPLOYE',
-                    'Vétérinaire' => 'ROLE_VETERINAIRE',
-                ])
-                ->setFormTypeOptions([
-                    'required' => true,
-                ])
-                ->allowMultipleChoices(false)
-                ->renderExpanded(true)
-                ->onlyOnForms(),
+            // ChoiceField::new('roles')
+            //     ->setLabel('Rôles')
+            //     ->setRequired(true)
+            //     ->setChoices([
+            //         'Employé' => 'ROLE_EMPLOYE',
+            //         'Vétérinaire' => 'ROLE_VETERINAIRE',
+            //     ])
+            //     ->setFormTypeOptions([
+            //         'required' => true,
+            //     ])
+            //     ->allowMultipleChoices(false)
+            //     ->renderExpanded(true)
+            //     ->onlyOnForms(),
             ArrayField::new('roles')
                 ->setLabel('Rôles')
                 ->formatValue(function ($value) use ($roles, $rolesBadges) {
@@ -108,7 +109,7 @@ class UtilisateursCrudController extends AbstractCrudController
 
                     return implode(' ', $badges);
                 })
-                ->hideOnForm(),
+                ,
             BooleanField::new('isVerified')
                 ->setLabel('Email vérifié')
                 ->renderAsSwitch(false)
@@ -179,7 +180,7 @@ class UtilisateursCrudController extends AbstractCrudController
                 });
             })
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
-            ->setPermission(Action::EDIT, 'ROLE_ADMIN')
+            // ->setPermission(Action::EDIT, 'ROLE_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_ADMIN');
 
     }
