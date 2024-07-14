@@ -74,7 +74,7 @@ class UtilisateursSubscriberTest extends WebTestCase
             'Utilisateurs[password]' => 'plainPassword',
             'Utilisateurs[nom]' => 'NomTest',
             'Utilisateurs[prenom]' => 'PrenomTest',
-            'Utilisateurs[roles]' => ['ROLE_EMPLOYE'], // Ensure that the roles field is correctly structured
+            'Utilisateurs[roles]' => ['ROLE_EMPLOYE'], 
         ]);
 
         // $this->client->submit($form);

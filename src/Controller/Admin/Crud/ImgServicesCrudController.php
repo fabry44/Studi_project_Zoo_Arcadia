@@ -60,7 +60,7 @@ class ImgServicesCrudController extends AbstractCrudController
             
             ImageField::new('imageName')
                 ->setLabel('Image')
-                ->setBasePath('/uploads/animaux')
+                ->setBasePath('/uploads/services')
                 ->hideOnForm(),
         ];
     }

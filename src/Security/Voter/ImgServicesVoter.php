@@ -82,7 +82,7 @@ class ImgServicesVoter extends Voter
       $action = $context->getRequest()->query->get('crudAction');
       
       // Les actions 'new', 'edit' et 'delete' sont réservées a l'administrateurs et aux employés
-      if (in_array($action, ['new', 'edit', 'delete'])) {
+      if (in_array($action, ['new', 'edit', 'delete','batchDelete'])) {
           return $this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_EMPLOYE');
       }
       

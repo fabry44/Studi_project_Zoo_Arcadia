@@ -61,6 +61,8 @@ services:
     App\EventSubscriber\AccessDeniedSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
+              
+    
                   
     # App\Service\SetImageService:
     #     arguments:

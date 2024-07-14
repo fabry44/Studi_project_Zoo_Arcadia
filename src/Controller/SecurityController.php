@@ -45,7 +45,8 @@ class SecurityController extends AbstractController
             // the title visible above the login form (define this option only if you are
             // rendering the login template in a regular Symfony controller; when rendering
             // it from an EasyAdmin Dashboard this is automatically set as the Dashboard title)
-            'page_title' => 'Veuiillez vous connecter pour accéder à votre interface utilisateur', // the <title> of the page
+            'page_title' => '<h1>Connexion Espace Pro</h1></br></br><h6>Cette espace est reservé au membres du zoo Arcadia. Veuillez vous connecter pour accéder à votre interface utilisateur</h6>', // the <title> of the page
+            'page_' => '<p>Connectez-vous pour accéder à votre interface utilisateur</p>', // the content shown below the title
 
             // the string used to generate the CSRF token. If you don't define
             // this parameter, the login form won't include a CSRF token
