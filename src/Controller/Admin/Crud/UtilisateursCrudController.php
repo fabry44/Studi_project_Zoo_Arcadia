@@ -85,19 +85,18 @@ class UtilisateursCrudController extends AbstractCrudController
             //         'mapped' => false,
             //         'required' => true,
             //     ]),
-            // ChoiceField::new('roles')
-            //     ->setLabel('Rôles')
-            //     ->setRequired(true)
-            //     ->setChoices([
-            //         'Employé' => 'ROLE_EMPLOYE',
-            //         'Vétérinaire' => 'ROLE_VETERINAIRE',
-            //     ])
-            //     ->setFormTypeOptions([
-            //         'required' => true,
-            //     ])
-            //     ->allowMultipleChoices(false)
-            //     ->renderExpanded(true)
-            //     ->onlyOnForms(),
+            ChoiceField::new('roles')
+                ->setLabel('Rôles')
+                ->setRequired(true)
+                ->setChoices([
+                    'Employé' => 'ROLE_EMPLOYE',
+                    'Vétérinaire' => 'ROLE_VETERINAIRE',
+                ])
+                ->setFormTypeOptions([
+                    'required' => true,
+                ])
+                ->allowMultipleChoices(true) //TODO : Mettre le roles en string dans l'entité et passé en folse le multiple choice
+                ->renderExpanded(true),
             ArrayField::new('roles')
                 ->setLabel('Rôles')
                 ->formatValue(function ($value) use ($roles, $rolesBadges) {
@@ -109,7 +108,7 @@ class UtilisateursCrudController extends AbstractCrudController
 
                     return implode(' ', $badges);
                 })
-                ,
+                ->onlyOnIndex(),
             BooleanField::new('isVerified')
                 ->setLabel('Email vérifié')
                 ->renderAsSwitch(false)

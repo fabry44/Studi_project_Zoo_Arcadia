@@ -65,4 +65,9 @@ class ImgServices
     {
         return $this->imageName;
     }
+
+    public function __toString(): string
+    {
+        return $this->imageName;
+    }
 }
