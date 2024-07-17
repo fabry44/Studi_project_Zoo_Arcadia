@@ -27,7 +27,7 @@ class HabitatsController extends AbstractController
     {   
         $habitats = $this->habitatsRepository->findAll();
 
-        $habitatTable = [];
+        $habitatsTables = [];
 
         // On récupère le nom, la description de l'habitat, les animaux présents et les images associées à chaque habitat
         foreach ($habitats as $habitat) {
@@ -81,7 +81,7 @@ class HabitatsController extends AbstractController
                 ];
             }
             // On ajoute enfin les informations de l'habitat à la liste des habitats
-            $habitatTable[$habitat->getNom()] = [
+            $habitatsTables[$habitat->getNom()] = [
                 'id' => $habitat->getId(),
                 'description' => $habitat->getDescript(),
                 'animaux' => $animals,
@@ -90,11 +90,10 @@ class HabitatsController extends AbstractController
             ];
         }
 
-        dump($habitatTable);
+        dump($habitatsTables);
 
         return $this->render('habitats/index.html.twig', [
-            'controller_name' => 'HabitatsController',
-            'habitatTable' => $habitatTable,
+            'habitatsTables' => $habitatsTables,
         ]);
     }
 }
