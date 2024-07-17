@@ -1,20 +1,147 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HabitatsController!{% endblock %}
+		{% block title %}
+			Espace habitats du zoo
+		{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/php/www/Studi_project/Studi_project_Zoo_Arcadia/src/Controller/HabitatsController.php</code></li>
-        <li>Your template at <code>C:/xampp/php/www/Studi_project/Studi_project_Zoo_Arcadia/templates/habitats/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+		{% block body %}
+		<div class="container content mt-4">
+			<div
+				class="row justify-content-center">
+				{# Navigation des Habitats #}
+				<nav class="col-12 d-flex justify-content-center mb-4 habitat_nav">
+					<ul class="nav">
+						{% for habitatName, habitat in habitatsTables %}
+							<li class="nav-item">
+								<div class="container container-link text-center" data-habitat="{{ habitatName }}"style="background-image: url('{{ asset(habitat.images[0]) }}'); background-size: cover; background-position: center; width: 150px; height: 150px; position: relative;">
+									<a href="#{{ habitatName }}" class="select_habitat d-block" style="color: white; position: absolute; bottom: 10px; left: 0; right: 0; background-color: rgba(0, 0, 0, 0.5); padding: 5px;">
+										{{ habitatName }}
+									</a>
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</nav>
+			
+				<div
+					class="col-12">
+					{# Affichage de l'habitat sélectionné #}
+					{% for habitatName, habitat in habitatsTables %}
+						<section id="{{ habitatName }}" class="habitat_section mb-5" style="display: none;">
+							<div class="container d-inline-flex justify-content-around align-items-center">
+								<h1>
+									Habitats {{ habitatName }}
+								</h1>
+								<div class="habitat_preview mb-3">
+									<img src="{{ asset(habitat.images[0]) }}" class="img-fluid" alt="Aperçu de l'habitat" >
+								</div>
+							</div>
+							<div class="container">
+								
+								<p>
+									<strong>
+										Description :
+									</strong>
+									{{ habitat.description }}
+								</p>
+								<p>
+									<strong>
+										Avis vétérinaire :
+									</strong>
+								</p>
+								{% for avis in habitat.avis %}
+									<p>
+										{{ avis.avis }}
+									</p>
+								{% endfor %}
+							</div>
+							<h2 class="mt-4">
+								Liste des animaux dans l'habitat:
+							</h2>
+							<div class="row">
+								{% for animal in habitat.animaux %}
+                                    <div class="col-md-4 mb-4">
+                                        <!-- card lien modal Fiche Animal-->
+                                        <div class="card animal_card" data-bs-toggle="modal" data-bs-target="#animalModal{{ animal.prenom }}">
+											<img src="{{ asset(animal.images[0]) }}" class="card-img-top" alt="Image de {{ animal.prenom }}">
+											<div class="card-body">
+												<h3 class="card-title">
+													{{ animal.prenom }}
+												</h3>
+											</div>
+										</div>
+                                        {# Modal Bootstrap #}
+                                        <div class="modal fade" id="animalModal{{ animal.prenom }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">{{ animal.prenom }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div id="carousel-{{ animal.prenom }}" class="carousel slide carouselAnimal" data-bs-ride="carousel">
+                                                            <div class="carousel-inner">
+                                                                {% for image in animal.images %}
+                                                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                                                        <img src="{{ asset(image) }}" class="d-block w-100 img-fluid mb-3" alt="Image de {{ animal.prenom }}">
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ animal.prenom }}" data-bs-slide="prev">
+                                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                <span class="visually-hidden">Précédente</span>
+                                                            </button>
+                                                            <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ animal.prenom }}" data-bs-slide="next">
+                                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                <span class="visually-hidden">Suivante</span>
+                                                            </button>
+                                                        </div>
+                                                        <p><strong>Race:</strong> {{ animal.race }}</p>
+                                                        <p><strong>Habitat:</strong> {{ animal.habitat }}</p>
+                                                        <h6>Rapport Vétérinaire:</h6>
+                                                        <p><strong>État:</strong> {{ animal.latestRapport.etat }}</p>
+                                                        <p><strong>Nourriture:</strong> {{ animal.latestRapport.nourriture }} (Grammage: {{ animal.latestRapport.grammage }} kg)</p>
+                                                        <p><strong>Détail:</strong> {{ animal.latestRapport.detail }}</p>
+                                                        <p><strong>Date:</strong> {{ animal.latestRapport.date }}</p>
+                                                        <p><strong>Vétérinaire:</strong> {{ animal.latestRapport.veterinaire }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+					                </div> 
+								{% endfor %}
+							</div>
+                            {# Photos suplémentaire de l'habitat #}
+							<h3 class="mt-4">
+								Photo supplémentaire de l’habitat :
+							</h3>
+							<div id="carousel-{{ habitatName }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for image in habitat.images %}
+										<div class="carousel-item {% if loop.first %}active{% endif %}">
+											<img src="{{ asset(image) }}" class="d-block w-100" alt="Photo de l'habitat">
+										</div>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ habitatName }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">
+										Précédente
+									</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ habitatName }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">
+										Suivante
+									</span>
+								</button>
+							</div>
+						</section>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+    {% endblock %}

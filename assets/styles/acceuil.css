@@ -1,0 +1,29 @@
+#presentation {
+    background-color: var(--beige);
+}
+
+/* Séparateur */
+.custom-shape-divider-bottom-1720924647 {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+    background-color: var(--beige);
+}
+
+.custom-shape-divider-bottom-1720924647 svg {
+    position: relative;
+    display: block;
+    width: calc(205% + 1.3px);
+    height: 180px;
+}
+
+.custom-shape-divider-bottom-1720924647 .shape-fill {
+    fill: #FFFFFF;
+}
+
+article {
+    background-color: var(--vert2);
+}
