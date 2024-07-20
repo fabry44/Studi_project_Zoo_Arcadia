@@ -1,13 +1,32 @@
 {% extends 'base.html.twig' %}
 
+
+		{# Nécessite le reload de la page pour le bon fonctionnement des lien habitat #}
+		{% block meta %}
+			<meta name="turbo-visit-control" content="reload">
+		{% endblock %}
+
+
 		{% block title %}
 			Espace habitats du zoo
 		{% endblock %}
 
 		{% block body %}
 		<div class="container content">
-			<div
-				class="row justify-content-center align-items-center">
+			<div class="row justify-content-center align-items-center">
+				<div class="col-8 mb-5">
+					<h1 class="text-center mt-5 mb-5">
+						Habitats du zoo	
+					</h1>
+					<p>
+						De nombreux habitats sont proposés par le zoo Arcadia pour le bien-être des animaux.
+						Profitez de votre visite pour découvrir les habitats proposés par le zoo.
+					</p>
+					<p>
+						Chaque habitat est adapté à un type d'animal en particulier.
+						Selectionnez un habitat pour en savoir plus.
+					</p>
+				</div>
 				{# Navigation des Habitats #}
 				<nav class="col-12 d-flex justify-content-center mb-auto habitat_nav mt-auto mb-auto">
 					<ul class="nav">
@@ -115,7 +134,7 @@
 														</div>
 												</div>
 										</div>
-										</div> 	
+									</div> 	
 								{% endfor %}
 							</div>
                             {# Photos suplémentaire de l'habitat #}

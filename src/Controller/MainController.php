@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Avis;
+use App\Form\AvisType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,7 +14,8 @@ use App\Repository\HabitatsRepository;
 use App\Repository\ImgAnimauxRepository;
 use App\Repository\AnimauxRepository;
 use App\Repository\AvisRepository;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class MainController extends AbstractController
@@ -38,7 +41,7 @@ class MainController extends AbstractController
     }
 
     #[Route('/', name: 'app_main_index')]
-    public function index(): Response
+    public function index(Request $request, EntityManagerInterface $entityManager,): Response
     {   
         /* *************************************************************** */
 /*                                 SERVICES                                */
@@ -141,6 +144,21 @@ class MainController extends AbstractController
         $AvisValide = $this->avisRepository->findBy(['valide' => true]);
         dump($AvisValide);
 
+        $avis = new Avis();
+        $form = $this->createForm(AvisType::class, $avis);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $avis->setValide(false); 
+            $entityManager->persist($avis);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre avis a été soumis avec succès et est en attente de validation.');
+
+            return $this->redirectToRoute('app_main_index');
+        }
+
         /* *************************************************************** */
         /*                            Contact                              */
         /* *************************************************************** */
@@ -151,6 +169,7 @@ class MainController extends AbstractController
             'selectedimagesHabitats' => $habitatsWithImages,
             'selectedAnimals' => $selectedAnimals,
             'AvisValides' => $AvisValide,
+            'form' => $form->createView(),
         ]);
     }
 }

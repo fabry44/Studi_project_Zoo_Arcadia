@@ -28,5 +28,9 @@
         </a><br>
     {% endif %}
 {% else %}
-    {{ field.value.prenom }} {{ field.value.nom }} 
+    {% if field.value %}
+        {{ field.value.prenom }} {{ field.value.nom }} 
+    {% else %}
+        Aucun Intervenant
+    {% endif %}
 {% endif %}   
