@@ -24,6 +24,42 @@
     fill: #FFFFFF;
 }
 
-article {
+/* Cards */
+
+.card_habitat {
+    margin: 20px;
+}
+.card_habitat .card-header {
+    background-color: var(--beige);
+    color: var(--vertSombre);
+}
+.card_habitat .card-body {
+    background-color: var(--marronSombre);
+    color: var(--vertSombre);
+    display: flex;
+    justify-content: space-around;
+}
+
+.card_habitat img {
+    width: auto;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card_service {
+    margin: 20px;
+}
+
+.card_service .card-body {
+    background-color: var(--beige);
+    color: var(--vertSombre);
+}
+
+.card_animal {
+    margin: 20px;
+}
+
+.card_animal .card-body {
     background-color: var(--vert2);
+    color: var(--maronSombre);
 }

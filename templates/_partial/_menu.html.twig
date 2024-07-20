@@ -1,15 +1,24 @@
 <nav class="navbar navbar-expand-md">
 			<div class="container container_nav">
+				{# logo #}
 				<a class="navbar-brand" href="#">
 					<img src="{{ asset('styles/images/Zoo-Arcadia.svg') }}" class="navbar-brand img-fluid" alt="Logo" id="logo" style="width: 100px; height:auto">
 				</a>
-				<button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+				{# Login #}
+				<div class="login ms-auto">
+					<a href="{{ path('app_login') }}" class="btn btn-outline">
+						Connexion
+					</a>
+				</div>
+				{# Bouton  menu #}
+				<button class="navbar-toggler me-auto" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
+				{# menu #}
 				<div class="collapse navbar-collapse" id="collapsibleNavId">
 					<ul class="navbar-nav me-auto mt-2 mt-lg-0">
 						<li class="nav-item">
-							<a class="nav-link active" href="#" aria-current="page">
+							<a class="nav-link active" href="app_main_index" aria-current="page">
 								Acceuil
 								<span class="visually-hidden">
 									(current)
@@ -21,7 +30,7 @@
 								Services
 							</a>
 						</li>
-            <li class="nav-item">
+						<li class="nav-item">
 							<a class="nav-link" href="{{ path('app_habitats') }}">
 								Habitats
 							</a>
@@ -31,10 +40,8 @@
 								Contact
 							</a>
 						</li>
-					</ul>				
+					</ul>
 				</div>
-        <div class="login">
-		      <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Connexion</a>
-        </div>
 			</div>
 		</nav>
+
