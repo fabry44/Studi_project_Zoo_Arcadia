@@ -34,9 +34,14 @@
     text-align: center;
 }
 
-.habitat_nav ul li img {
+.container-link {
     position: relative;
     display: block;
+    background-size: cover;
+    background-position: center;
+    width: 250px;
+    height: 250px;
+    position: relative;
 }
 
 .habitat_nav .select_habitat {
@@ -66,22 +71,6 @@
 
 .habitat_nav .container-link.inactive {
     filter: blur(2px);
-}
-
-.habitat_nav .select_habitat::after {
-    content: "";
-    display: block;
-    position: absolute;
-    left: 0;
-    bottom: 10;
-    width: 0%;
-    background-color: var(--vert_foncé);
-    height: 5px;
-    transition: 250ms ease-in-out;
-}
-
-.habitat_nav .select_habitat:hover::after {
-    width: 100%;
 }
 
 .habitat_section {
@@ -132,4 +121,12 @@
     justify-content: space-between;
     align-items: center;
     margin: 10px 0;
+}
+
+@media screen and (min-width: 768px) {
+    .container-link {
+        width: 350px;
+        height: 350px;
+    }
+    
 }
