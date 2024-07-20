@@ -55,6 +55,7 @@ CREATE TABLE avis (
   id SERIAL PRIMARY KEY,
   employe_id INTEGER,
   pseudo VARCHAR(255) NOT NULL,
+  rating smallint NOT NULL,
   avis TEXT NOT NULL,
   valide BOOLEAN NOT NULL,
   FOREIGN KEY (employe_id) REFERENCES utilisateurs (id)

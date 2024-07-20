@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AvisRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
 #[ORM\Table(name:"avis")] // nom exact de la table
@@ -16,9 +17,18 @@ class Avis
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le pseudo est obligatoire')]
+    #[Assert\Length(max: 255, maxMessage: 'Le pseudo ne doit pas dépasser 255 caractères')]
     private ?string $pseudo = null;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\NotBlank(message: 'La note est obligatoire')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'La note doit être entre {{ min }} et {{ max }}')]
+    private ?int $rating = null;
+
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'L\'avis est obligatoire')]
+    #[Assert\Length(max: 500, maxMessage: 'L\'avis ne doit pas dépasser 500 caractères')]
     private ?string $avis = null;
 
     #[ORM\Column]
@@ -73,6 +83,18 @@ class Avis
     public function setEmploye(?Utilisateurs $employe): self
     {
         $this->employe = $employe;
+        return $this;
+    }
+
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(int $rating): static
+    {
+        $this->rating = $rating;
+
         return $this;
     }
 }

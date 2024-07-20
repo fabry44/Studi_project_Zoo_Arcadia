@@ -6,11 +6,13 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './fontawesome-free-6.5.2-web/css/all.min.css';
 import './styles/app.css';
 import './styles/menu.css';
 import './styles/footer.css';
 import './styles/acceuil.css';
 import './styles/habitats.css';
+import './styles/service.css';
 
 
 /*
@@ -20,11 +22,19 @@ import './styles/habitats.css';
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
+import "./js/rating.js";
+
+
+
 
 
 
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
+/*
+*choix des habitats pour la page d'haitats
+*/
 
 document.addEventListener("DOMContentLoaded", function () {
   const links = document.querySelectorAll('.container-link');
@@ -55,3 +65,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+

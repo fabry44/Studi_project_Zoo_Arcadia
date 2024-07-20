@@ -182,50 +182,78 @@
 				</div>
 			</section>
 			{# Section Avis de la clientèle #}
-			<section id="avis" class="pb-4">
-				<div class="container mt-5 mb-5">
-					<header>
-						<h2>
-							Avis de la Clientèle
-						</h2>
-					</header>
-					<div class="row">
+            <section id="avis" class="pb-4">
+                <div class="container mt-5 mb-5">
+                    <header>
+                        <h2 class="text-center">Avis de la Clientèle</h2>
+                    </header>
+                    <div class="row">
                         {# Boucle pour afficher les avis de la clientèle #}
                         <div id="carousel-avis-clients" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
                                 {% for avis in AvisValides %}
                                     <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                        <blockquote>
-                                            <p>
-                                                "
-                                                {{ avis.avis }}
-                                                "
-                                            </p>
-                                            <footer>
-                                                <cite>
-                                                    {{ avis.pseudo }}
-                                                </cite>
-                                            </footer>
-                                        </blockquote>
+                                        <div class="card card_avis mx-auto" style="max-width: 600px;">
+                                            <div class="card-body text-center">
+                                                <div class="stars">
+                                                    {% for i in 1..5 %}
+                                                        {% if i <= avis.rating %}
+                                                            <i class="fa-solid fa-star"></i>
+                                                        {% else %}
+                                                            <i class="fa-regular fa-star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <p class="card-text mt-3">{{ avis.avis }}</p>
+                                                <h4 class="card-subtitle text-muted mt-2">{{ avis.pseudo }}</h4>
+                                            </div>
+                                        </div>
                                     </div>
                                 {% endfor %}
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carousel-avis-clients" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">
-                                    Précédente
-                                </span>
+                                <span class="visually-hidden">Précédente</span>
                             </button>
                             <button class="carousel-control-next" type="button" data-bs-target="#carousel-avis-clients" data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">
-                                    Suivante
-                                </span>
+                                <span class="visually-hidden">Suivante</span>
                             </button>
                         </div>
-					</div>
-				</div>
-			</section>
+                    </div>
+                </div>
+            </section>
+            {# Section Formulaire d'Avis #}
+                <div class="container mt-5 mb-5">
+                    <header>
+                        <h2 class="text-center">Laisser nous un avis</h2>
+                    </header>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            {{ form_start(form) }}
+                            {{ form_row(form.pseudo, { 'attr': {'class': 'form-control', 'placeholder': 'Votre pseudo'} }) }}
+
+                            <div data-controller="rating">
+                                <div class="stars mb-3" id="rating-star">
+                                    {% for i in 1..5 %}
+                                        <i class="fa-regular fa-star rating-star" data-rating-target="star" data-value="{{ i }}"></i>
+                                    {% endfor %}
+                                {# </div><input type="hidden" data-rating-target="ratingInput" name="avis[rating]" data-rating="input"> #}
+                                
+                            </div>
+{{ form_widget(form.rating, { 'attr': { 'type': 'hidden', 'data-rating-target' : 'ratingInput', 'data-rating' : 'input', 'style': 'display:none;' } }) }}
+
+
+                            {{ form_row(form.avis, { 'attr': {'class': 'form-control', 'placeholder': 'Votre avis', 'rows': 5} }) }}
+                            {{ form_row(form.submit, { 'attr': {'class': 'btn btn-primary mt-3'} }) }}
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    
+                </script>
 		</main>
 
 
