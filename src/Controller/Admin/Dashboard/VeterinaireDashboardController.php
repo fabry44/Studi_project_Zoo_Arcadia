@@ -18,6 +18,7 @@ use App\Entity\Utilisateurs;
 use App\Entity\Animaux;
 use App\Entity\Habitats;
 use App\Entity\RapportsVeterinaires;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_VETERINAIRE')]
@@ -114,5 +115,13 @@ class VeterinaireDashboardController extends AbstractDashboardController
                 MenuItem::section(),
                 // MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
             ]);
+    }
+
+    public function configureAssets(): Assets
+    {
+        return Assets::new()
+        ->addAssetMapperEntry('app', 'admin')
+        
+        ;
     }
 }

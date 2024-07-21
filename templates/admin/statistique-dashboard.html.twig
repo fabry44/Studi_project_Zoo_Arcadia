@@ -1,0 +1,45 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+		{% block content_title 'Popularité des animaux' %}
+
+    {% block javascripts %}
+			{% block importmap %}
+				{{ importmap(['app', 'admin']) }}
+			{% endblock %}
+		{% endblock %}
+
+
+		{% block main %}
+			
+            <div class="container">
+              <h4 class="text-center mt-5 mb-5">
+                Tableau statistiques des animaux
+              </h4>
+              <table id="table" data-toggle="table" data-mobile-responsive="true"  data-check-on-init="true" data-show-fullscreen="true" data-toolbar="#toolbar" data-click-to-select="true" data-filter-control="true"  data-show-toggle="true" data-show-search-clear-button="true" data-show-columns="true" data-pagination="true" data-search="true" data-advanced-search="true" data-id-table="advancedTable">
+                  <thead> 
+                    <tr>
+                    
+                      <th scope="col" data-field="Animal" data-switchable="false" data-width="150">Animal</th>
+                      <th scope="col" data-field="vues" data-switchable="false" data-width="150">Nombre de vues</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for animal in animals %}
+                      <tr>
+                        <td>{{ animal }}</td>
+                        <td>{{ vues[loop.index0] }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+            <div class="container">
+              <h4 class="text-center mt-5 mb-5">
+                Graphique statistiques des animaux
+              </h4>
+              <div class="container">
+                {{ render_chart(chart) }}
+              </div>
+            </div>
+       
+		{% endblock %}

@@ -29,42 +29,54 @@ import "./js/rating.js";
 
 
 
-
-
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
 
 /*
 *choix des habitats pour la page d'haitats
 */
 
-document.addEventListener("DOMContentLoaded", function () {
-  const links = document.querySelectorAll('.container-link');
-  const sections = document.querySelectorAll('.habitat_section');
+// document.addEventListener("DOMContentLoaded", function () {
+//   const links = document.querySelectorAll('.container-link');
+//   const sections = document.querySelectorAll('.habitat_section');
 
-  links.forEach(link => {
-    link.addEventListener('click', function (e) {
-      e.preventDefault(); // Prevent the default link behavior
-      const habitatName = this.getAttribute('data-habitat');
+//   links.forEach(link => {
+//     link.addEventListener('click', function (e) {
+//       e.preventDefault(); // Prevent the default link behavior
+//       const habitatName = this.getAttribute('data-habitat');
 
-      // Remove 'active' class and add 'inactive' class to all links
-      links.forEach(lnk => {
-        lnk.classList.remove('active');
-        lnk.classList.add('inactive');
-      });
+//       // Remove 'active' class and add 'inactive' class to all links
+//       links.forEach(lnk => {
+//         lnk.classList.remove('active');
+//         lnk.classList.add('inactive');
+//       });
 
-      // Add 'active' class and remove 'inactive' class to the clicked link
-      this.classList.add('active');
-      this.classList.remove('inactive');
+//       // Add 'active' class and remove 'inactive' class to the clicked link
+//       this.classList.add('active');
+//       this.classList.remove('inactive');
 
-      // Hide all sections
-      sections.forEach(section => {
-        section.style.display = 'none';
-      });
+//       // Hide all sections
+//       sections.forEach(section => {
+//         section.style.display = 'none';
+//       });
 
-      // Show the selected section
-      document.getElementById(habitatName).style.display = 'block';
-    });
-  });
-});
+//       // Show the selected section
+//       document.getElementById(habitatName).style.display = 'block';
+//     });
+//   });
+// });
+
+// // Statistiques des clics sur les animaux
+// document.addEventListener('DOMContentLoaded', function () {
+//   document.querySelectorAll('.card').forEach(function (card) {
+//     card.addEventListener('click', function () {
+//       const animalPrenom = card.getAttribute('data-animal-prenom');
+//       fetch(`/animal/view/${animalPrenom}`)
+//         .then(response => response.json())
+//         .then(data => {
+//           console.log(`L'animal ${animalPrenom} a été consulté ${data.viewCount} fois.`);
+//         });
+//     });
+//   });
+// });
 
 

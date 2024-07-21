@@ -20,6 +20,7 @@ use App\Controller\Admin\Crud\UtilisateursCrudController;
 use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
 use App\Controller\Admin\Crud\AlimentationsCrudController;
 use App\Entity\ImgServices;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_EMPLOYE')]
@@ -106,5 +107,13 @@ class EmployeDashboardController extends AbstractDashboardController
                 // MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
             
             ]);
+        }
+
+        public function configureAssets(): Assets
+        {
+            return Assets::new()
+            ->addAssetMapperEntry('app', 'admin')
+            
+            ;
         }
 }
