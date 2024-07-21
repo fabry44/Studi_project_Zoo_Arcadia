@@ -18,13 +18,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use App\Controller\Admin\Crud\AlimentationsCrudController;
 use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
+use App\Document\Animal;
 use App\Entity\AvisHabitats;
 use App\Entity\ImgAnimaux;
 use App\Entity\ImgHabitats;
 use App\Entity\ImgServices;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
+#[IsGranted('ROLE_ADMIN')]
 class AdminDashboardController extends AbstractDashboardController
 {
     #[Route('/admin-dashboard', name: 'admin_dashboard')]
@@ -85,6 +87,7 @@ class AdminDashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Gestion des animaux', 'fa fa-paw', Animaux::class),
             MenuItem::linkToCrud('Rapports Veterinaires ', 'fa fa-file-circle-check', RapportsVeterinaires::class),
             MenuItem::linkToCrud('Photos ', 'fa fa-images', ImgAnimaux::class),
+            MenuItem::linkToRoute('Statistiques', 'fa fa-chart-line', 'statistique_dashboard'),
         ]);           
 
     }
@@ -117,6 +120,14 @@ class AdminDashboardController extends AbstractDashboardController
                 
             
             ]);
+    }
+
+    public function configureAssets(): Assets
+    {
+        return Assets::new()
+        ->addAssetMapperEntry('app', 'admin')
+        
+        ;
     }
 
     
