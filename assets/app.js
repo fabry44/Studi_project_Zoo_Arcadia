@@ -13,6 +13,7 @@ import './styles/footer.css';
 import './styles/acceuil.css';
 import './styles/habitats.css';
 import './styles/service.css';
+import './styles/contact.css';
 
 
 /*
