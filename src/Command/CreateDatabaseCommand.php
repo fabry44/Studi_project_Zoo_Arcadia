@@ -108,9 +108,9 @@ class CreateDatabaseCommand extends Command
 
     private function createPostgreSQLDatabase(SymfonyStyle $io, string $dbName): int
     {
-        $dsn = 'pgsql:host=127.0.0.1;port=5432';
-        $user = 'postgres';
-        $password = '6986';
+        $dsn = 'pgsql:host=' . getenv('DATABASE_HOST') . ';port=' . getenv('DATABASE_PORT');
+        $user = getenv('DATABASE_USER');
+        $password = getenv('DATABASE_PASSWORD');
 
         try {
             $io->writeln('Connexion à PostgreSQL...');
