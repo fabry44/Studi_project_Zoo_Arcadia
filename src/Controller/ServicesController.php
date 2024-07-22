@@ -38,7 +38,6 @@ class ServicesController extends AbstractController
             ];
         }
 
-        dump($servicesTables);
         return $this->render('services/index.html.twig', [
             'servicesTables' => $servicesTables,
         ]);
