@@ -1,7 +1,7 @@
 doctrine_mongodb:
     connections:
         default:
-            server: '%env(resolve:MONGODB_URL)%'
+            server: '%env(resolve:ORMONGO_URL)%'
             options: {}
     default_database: hello_%kernel.environment%
     document_managers:
