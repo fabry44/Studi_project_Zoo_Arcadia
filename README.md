@@ -123,7 +123,3 @@ Démarrez le serveur Symfony :
 ```bash
 symfony server:start   
 ``
-
-
-
-mongodb://yorfa:jkclqcklqscnljo@lon5-c11-0.mongo.objectrocket.com:43346,lon5-c11-2.mongo.objectrocket.com:43346,lon5-c11-1.mongo.objectrocket.com:43346/arcadia_db?replicaSet=6e7fc8147272400493ad64aca2340701
