@@ -1,4 +1,0 @@
-framework:
-    test: true
-    session:
-        storage_factory_id: session.storage.factory.mock_file # Pour stocker la session dans un fichier temporaire lors des tests fonctionnels 
