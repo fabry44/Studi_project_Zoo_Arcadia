@@ -129,5 +129,15 @@ INSERT INTO rapports_veterinaires (animal_id, date, veterinaire_id, etat, nourri
 (9, CURRENT_TIMESTAMP, 2, 'Sain', 'Bois', 1, 'Bucky le castor est très actif dans la construction de barrages, ce qui est crucial pour son bien-être psychologique et physique.'),
 (9, CURRENT_TIMESTAMP, 5, 'Sain', 'Bois', 1, 'Son interaction avec l''environnement et d''autres castors est positive, indiquant un état de santé stable et actif.');
 
+-- Horaires d'ouverture du parc
+INSERT INTO horaire (id, jour, ouvre, ferme) VALUES
+(1, 'Lundi', '09:00:00', '18:00:00'),
+(2, 'Mardi', '09:00:00', '18:00:00'),
+(3, 'Mercredi', '09:00:00', '18:00:00'),
+(4, 'Jeudi', '09:00:00', '18:00:00'),
+(5, 'Vendredi', '09:00:00', '18:00:00'),
+(6, 'Samedi', '10:00:00', '20:00:00'),
+(7, 'Dimanche', '10:00:00', '20:00:00');
+
 -- Fermeture de la transaction pour garantir l'intégrité
 COMMIT;
