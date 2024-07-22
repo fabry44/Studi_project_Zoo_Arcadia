@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    mongodb_server: "mongodb://localhost:27017"
 
 services:
     # default configuration for services in *this* file
@@ -22,3 +23,46 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    # Redirection des utilisiteur connectés en fonction de leur Rôle
+    # app.login_success_listener:
+    #     class: App\EventListener\LoginSuccessListener
+    #     arguments: ['@router', '@security.token_storage']
+    #     tags:
+    #         - { name: kernel.event_listener, event: security.interactive_login, method: onSecurityInteractiveLogin }
+    
+    # App\EventListener\LoginRedirectListener:
+    #     tags:
+    #         - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    
+    app.security.login_success:
+        class: App\Security\LoginSuccess
+        arguments: ['@router', '@security.authorization_checker']
+
+    App\EventSubscriber\UtilisateursSubscriber:
+        arguments:
+            $passwordHasher: '@security.password_hasher'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $emailVerifier: '@App\Security\EmailVerifier'
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
+
+    App\Controller\Admin\Crud\AlimentationsCrudController:
+        arguments:
+            $security: '@security.helper'
+
+    App\Service\extractDashboardService:
+        arguments:
+            $path: '%kernel.project_dir%/Service'
+    
+    App\Security\Voter\UtilisateursVoter:
+        tags: [security.voter]
+
+    App\EventSubscriber\AccessDeniedSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
+    
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+              

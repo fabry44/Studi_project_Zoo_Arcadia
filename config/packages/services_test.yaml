@@ -1,0 +1,13 @@
+services:
+    mailer.message_logger_listener:
+        class: Symfony\Component\Mailer\EventListener\MessageLoggerListener
+        tags:
+            - { name: 'kernel.event_subscriber' }
+    App\EventSubscriber\UtilisateursSubscriber:
+        arguments:
+            $passwordHasher: '@security.password_hasher'
+            $entityManager: '@doctrine.orm.entity_manager'
+            $mailer: '@mailer'
+            $verifyEmailHelper: '@SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelper'
+        tags:
+            - { name: 'kernel.event_subscriber' }

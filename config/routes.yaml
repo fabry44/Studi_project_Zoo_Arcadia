@@ -3,3 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+# post_register_redirect:
+#     path: /register/redirect
+#     controller: App\Controller\RegistrationController::redirectAfterRegistration  
+verify_email:
+    path: /admin/verify-email/{id}
+    controller: App\Controller\Admin\Crud\UtilisateursCrudController::verifyEmail
+    methods: [GET]

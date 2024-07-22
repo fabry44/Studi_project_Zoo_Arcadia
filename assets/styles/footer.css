@@ -1,0 +1,17 @@
+footer {
+  background-color: var(--beige);
+  padding: 25px 0;
+  text-align: center;
+}
+
+.footer_link {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer_link a {
+  color: var(--vertSombre);
+  margin: 5px;
+}

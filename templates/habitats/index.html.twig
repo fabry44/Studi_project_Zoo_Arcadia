@@ -1,0 +1,203 @@
+{% extends 'base.html.twig' %}
+
+		{# {% block meta %}
+			<meta name="turbo-visit-control" content="reload">
+		{% endblock %} #}
+
+		{% block title %}
+			Espace habitats du zoo
+		{% endblock %}
+
+		{% block body %}
+			<div class="container content" data-controller="habitat">
+				<div class="row justify-content-center align-items-center">
+					<div class="col-8 mb-5">
+						<h1 class="text-center mt-5 mb-5">
+							Habitats du zoo
+						</h1>
+						<p>
+							De nombreux habitats sont proposés par le zoo Arcadia pour le bien-être des animaux.
+							        Profitez de votre visite pour découvrir les habitats proposés par le zoo.
+						</p>
+						<p>
+							Chaque habitat est adapté à un type d'animal en particulier.
+							        Selectionnez un habitat pour en savoir plus.
+						</p>
+					</div>
+					<nav class="col-12 d-flex justify-content-center mb-auto habitat_nav mt-auto mb-auto">
+						<ul class="nav">
+							{% for habitatName, habitat in habitatsTables %}
+								<li class="nav-item" data-habitat-target="link" data-habitat="{{ habitatName }}">
+									<div class="container container-link text-center" style="background-image: url('{{ asset(habitat.images[0]) }}');">
+										<p class="select_habitat d-block">
+											{{ habitatName }}
+										</p>
+									</div>
+								</li>
+							{% endfor %}
+						</ul>
+					</nav>
+					<div class="col-12 mt-5 mb-5">
+						{% for habitatName, habitat in habitatsTables %}
+							<section id="{{ habitatName }}" class="habitat_section mt-5 mb-5" data-habitat-target="section" style="display: none;">
+								<div class="container d-inline-flex justify-content-around align-items-center">
+									<div class="col-6 col-md-4">
+										<h1>
+											Habitats
+											{{ habitatName }}
+										</h1>
+									</div>
+									<div class="col-6 col-md-8">
+										<div class="habitat_preview mb-3">
+											<img src="{{ asset(habitat.images[0]) }}" class="img-fluid" alt="Aperçu de l'habitat">
+										</div>
+									</div>
+								</div>
+								<div class="container mt-5 mb-5">
+									<p>
+										<strong>
+											Description :
+										</strong>
+										{{ habitat.description }}
+									</p>
+									<p>
+										<strong>
+											Avis vétérinaire :
+										</strong>
+									</p>
+									{% for avis in habitat.avis %}
+										<p>
+											{{ avis.avis }}
+										</p>
+									{% endfor %}
+								</div>
+								<h2 class="mt-4">
+									Liste des animaux dans l'habitat:
+								</h2>
+								<div class="row">
+									{% for animal in habitat.animaux %}
+										<div class="col-md-4 mb-4" data-controller="animal">
+											<div class="card animal_card" data-animal-target="card" data-bs-toggle="modal" data-bs-target="#animalModal{{ animal.prenom }}" data-animal-prenom="{{ animal.prenom }}">
+												<img src="{{ asset(animal.images[0]) }}" class="card-img-top" alt="Image de {{ animal.prenom }}">
+												<div class="card-body">
+													<h3 class="card-title">
+														{{ animal.prenom }}
+													</h3>
+												</div>
+											</div>
+											<div class="modal fade" id="animalModal{{ animal.prenom }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="staticBackdropLabel">
+																{{ animal.prenom }}
+															</h5>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															<div id="carousel-{{ animal.prenom }}" class="carousel slide carouselAnimal" data-bs-ride="carousel">
+																<div class="carousel-inner">
+																	{% for image in animal.images %}
+																		<div class="carousel-item {% if loop.first %}active{% endif %}">
+																			<img src="{{ asset(image) }}" class="d-block w-100 img-fluid mb-3" alt="Image de {{ animal.prenom }}">
+																		</div>
+																	{% endfor %}
+																</div>
+																<button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ animal.prenom }}" data-bs-slide="prev">
+																	<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+																	<span class="visually-hidden">
+																		Précédente
+																	</span>
+																</button>
+																<button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ animal.prenom }}" data-bs-slide="next">
+																	<span class="carousel-control-next-icon" aria-hidden="true"></span>
+																	<span class="visually-hidden">
+																		Suivante
+																	</span>
+																</button>
+															</div>
+															<p>
+																<strong>
+																	Race:
+																</strong>
+																{{ animal.race }}
+															</p>
+															<p>
+																<strong>
+																	Habitat:
+																</strong>
+																{{ animal.habitat }}
+															</p>
+															<h4>
+																Rapport Vétérinaire:
+															</h4>
+															<p>
+																<strong>
+																	Date:
+																</strong>
+																{{ animal.latestRapport.date }}
+															</p>
+															<p>
+																<strong>
+																	État:
+																</strong>
+																{{ animal.latestRapport.etat }}
+															</p>
+															<p>
+																<strong>
+																	Nourriture:
+																</strong>
+																{{ animal.latestRapport.nourriture }}
+																(Grammage:
+																{{ animal.latestRapport.grammage }}
+																kg)
+															</p>
+															<p>
+																<strong>
+																	Détail:
+																</strong>
+																{{ animal.latestRapport.detail }}
+															</p>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+																Fermer
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+								<h3 class="mt-5">
+									Photo supplémentaire de l’habitat :
+								</h3>
+								<div id="carousel-{{ habitatName }}" class="carousel slide" data-bs-ride="carousel">
+									<div class="carousel-inner">
+										{% for image in habitat.images %}
+											<div class="carousel-item {% if loop.first %}active{% endif %}">
+												<img src="{{ asset(image) }}" class="d-block w-100" alt="Photo de l'habitat">
+											</div>
+										{% endfor %}
+									</div>
+									<button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ habitatName }}" data-bs-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">
+											Précédente
+										</span>
+									</button>
+									<button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ habitatName }}" data-bs-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">
+											Suivante
+										</span>
+									</button>
+								</div>
+							</section>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endblock %}
+

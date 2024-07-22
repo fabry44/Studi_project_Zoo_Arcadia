@@ -1,0 +1,36 @@
+{# Ajout de liens vers les fiches des utilisateurs dans le tableau de bord de l'utilisateurs #}
+
+{# Récupération du dashboard pour les liens #}
+{% set dynamicPath = field.getCustomOption('dashboard') %}
+
+{# Si la valeur du champ est un tableau, on affiche un lien pour chaque utilisateur #}
+{% if dynamicPath == 'admin_dashboard' %}
+    {% if field.value is iterable %}
+
+        {% for utilisateur in field.value %}
+            <a href="{{ path(dynamicPath, {
+            crudAction: 'detail',
+            crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\UtilisateursCrudController',        
+            entityId: utilisateur.id
+        }) }}">
+        {{ utilisateur.prenom }} {{ utilisateur.nom }} 
+        </a><br>
+        {% endfor %}
+
+    {# Sinon, on affiche un lien pour l'habitat #}
+    {% else %}
+        <a href="{{ path(dynamicPath, {
+            crudAction: 'detail',
+            crudControllerFqcn: 'App\\Controller\\Admin\\Crud\\UtilisateursCrudController',        
+            entityId: field.value.id
+        }) }}">
+        {{ field.value.prenom }} {{ field.value.nom }} 
+        </a><br>
+    {% endif %}
+{% else %}
+    {% if field.value %}
+        {{ field.value.prenom }} {{ field.value.nom }} 
+    {% else %}
+        Aucun Intervenant
+    {% endif %}
+{% endif %}   
