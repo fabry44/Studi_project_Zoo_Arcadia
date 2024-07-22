@@ -66,3 +66,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
               
+    App\Form\: 
+        resource: '../src/Form'
+        tags: ['form.type']
