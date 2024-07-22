@@ -130,8 +130,9 @@ class CreateDatabaseCommand extends Command
             }
 
             // Connexion à la base de données nouvellement créée
+            $dsn = 'pgsql:host=' . getenv('DATABASE_HOST') . ';port=' . getenv('DATABASE_PORT') . ';dbname=' . $dbName;
             $io->writeln('Connexion à la nouvelle base de données...');
-            $pdo = new PDO("pgsql:host=127.0.0.1;port=5432;dbname=$dbName", $user, $password);
+            $pdo = new PDO($dsn, $user, $password);
             $io->writeln('Connexion réussie à la nouvelle base de données.');
 
             // Lire et exécuter le fichier create_database_pgsql.sql pour PostgreSQL
