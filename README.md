@@ -1,99 +1,125 @@
 # Studi_project_Zoo_Arcadia
-Project d'etude Studi (ECF) : conception d'un site web Zoo-Arcadia
+Projet d'étude Studi (ECF) : conception d'un site web Zoo-Arcadia
+
+## Prérequis
+
+- PHP 8.x
+- Composer
+- Symfony CLI
+- MariaDB ou MySQL
+- PostgreSQL
+- MongoDB
+- Node.js et npm (pour la gestion des assets)
+
+## Installation de l'application
+
+Clonez le dépôt et installez les dépendances :
+
+```bash
+git clone <url_du_depot>
+cd Studi_project_Zoo_Arcadia
+composer install
+```
+
+Configuration de l'environnement
+Copiez le fichier .env et configurez-le selon vos besoins : .env .env.local
+
+## Création de la base de données relationnelle
 
 
-## Création de la base de données
-
+Création de la base de données relationnelle
 Pour créer la base de données nécessaire à l'application, exécutez les commandes suivantes :
 
-Pour une base de donnée MariadB MySQL
+Pour une base de données MariaDB/MySQL :
 
 ```bash
-php bin/console app:create-database mariadb
+php bin/console doctrine:database:create mariadb
 ```
 
-Pour une base de donnée PostgreSQL
+Pour une base de données PostgreSQL :
 
 ```bash
-php bin/console app:create-database pgsql
+php bin/console doctrine:database:create postgresql  
 ```
 
-Verification si la base de donnée créer avec les commandes SQL sont bien synchronisé avec Doctrine.
-
-```bash
-php bin/console doctrine:schema:validate
-```
-
-En principe pour MariadB, la base de donnée est bien synchroniser avec les entités doctrine en tous cas le mapping, pour PostgreSQL le schema n'est pas synchroniser par contre. 
-
-Si le schema de la base de donnée n'est pas synchroniser effectuer la commande :
-
-```bash
-php bin/console doctrine:migrations:diff   
-```
-
-puis
-```bash
-symfony.exe console doctrine:migrations:migrate 
-```
-
-puis tester une nouvelle fois avec 
+Vérifiez si la base de données créée est bien synchronisée avec les entités Doctrine :
 
 ```bash
 php bin/console doctrine:schema:validate
 ```
 
-Si le schemas n'est pas encore Sync, alors:
+Si le schéma de la base de données n'est pas synchronisé, effectuez les commandes suivantes :
 
 ```bash
-php bin/console doctrine:schema:update --dump-sql
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
 ```
 
-puis un :
+Puis, testez à nouveau avec :
+
+```bash
+php bin/console doctrine:schema:validate
+```
+Si le schéma n'est toujours pas synchronisé, utilisez :
 
 ```bash
 php bin/console doctrine:schema:update --force
 ```
-
-refaite les test :
+Testez une dernière fois :
 
 ```bash
 php bin/console doctrine:schema:validate
 ```
 
-Tout est près !
+## Création de la base de données MongoDB
 
-### Création du compte administrateur
+Démarrez votre instance MongoDB et créez les collections nécessaires :
+
+```bash
+php bin/console doctrine:mongodb:schema:create
+```
+
+Création du compte administrateur
+Créez un compte administrateur via la console :
 
 ```bash
 php bin/console app:create-admin
 ```
-La deuxième commande permet de créer un administrateur via la console (la seule possibilité).
 
-#### Login avec donnée préenregistrer import_data.sql
+Comptes d'exemple
 Voici trois comptes en exemples :
 
-1. Compte administrateur :
-  - Email : admin@gmail.com
-  - Nom : L'administrateur
-  - Prénom : UserAdmin
-  - Mot de passe : 12345678
-  - Rôles : ["ROLE_ADMIN"]
-  - Vérifié : Oui
+## Compte administrateur :
 
-2. Compte vétérinaire :
-  - Email : vétérinaire@gmail.com
-  - Nom : Le vétérinaire
-  - Prénom : UserVétérinaire
-  - Mot de passe : 12345678
-  - Rôles : ["ROLE_VETERINAIRE"]
-  - Vérifié : Oui
+Email : admin@gmail.com
+Nom : L'administrateur
+Prénom : UserAdmin
+Mot de passe : 12345678
+Rôles : ["ROLE_ADMIN"]
 
-3. Compte employé :
-  - Email : employé@gmail.com
-  - Nom : L'employé
-  - Prénom : UserEmployé
-  - Mot de passe : 12345678
-  - Rôles : ["ROLE_EMPLOYE"]
-  - Vérifié : Oui
+## Compte vétérinaire :
 
+Email : veterinaire@gmail.com
+Nom : Le vétérinaire
+Prénom : UserVétérinaire
+Mot de passe : 12345678
+Rôles : ["ROLE_VETERINAIRE"]
+
+## Compte employé :
+
+Email : employe@gmail.com
+Nom : L'employé
+Prénom : UserEmployé
+Mot de passe : 12345678
+Rôles : ["ROLE_EMPLOYE"]
+
+
+
+
+## Lancer l'application
+Démarrez le serveur Symfony :
+émarrez le serveur Symfony :
+
+```bash
+symfony server:start   
+```
