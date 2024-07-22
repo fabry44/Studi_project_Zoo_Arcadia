@@ -4,17 +4,11 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-if (file_exists(dirname(__DIR__).'/config/bootstrap.php')) {
-    require dirname(__DIR__).'/config/bootstrap.php';
-} elseif (method_exists(Dotenv::class, 'bootEnv')) {
+// Charger les variables d'environnement à partir de Heroku si .env n'existe pas
+if (!file_exists(dirname(__DIR__).'/.env')) {
+    $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = 'prod';
+    $_SERVER['DATABASE_URL'] = $_ENV['DATABASE_URL'] = getenv('DATABASE_URL');
+    $_SERVER['APP_SECRET'] = $_ENV['APP_SECRET'] = getenv('APP_SECRET');
+} else {
     (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
-}
-
-$dsn = getenv('DATABASE_URL');
-if ($dsn !== false) {
-    $parsedUrl = parse_url($dsn);
-    putenv('DATABASE_USER=' . $parsedUrl['user']);
-    putenv('DATABASE_PASSWORD=' . $parsedUrl['pass']);
-    putenv('DATABASE_HOST=' . $parsedUrl['host']);
-    putenv('DATABASE_PORT=' . $parsedUrl['port']);
 }
