@@ -88,8 +88,17 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
         },
-        "post-install-cmd": [],
-        "post-update-cmd": []
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
+        "compile": [
+            "php bin/console doctrine:mongodb:schema:create",
+            "php bin/console app:create-database postgresql",
+            "php bin/console doctrine:schema:update --force"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"
