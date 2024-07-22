@@ -122,3 +122,11 @@ CREATE TABLE rapports_veterinaires (
   FOREIGN KEY (animal_id) REFERENCES animaux (id),
   FOREIGN KEY (veterinaire_id) REFERENCES utilisateurs (id)
 );
+
+-- Table `rapports_veterinaires`
+CREATE TABLE horaire (
+  id integer NOT NULL,
+  jour VARCHAR(255) NOT NULL,
+  ouvre time(0) without time zone NOT NULL,
+  ferme time(0) without time zone NOT NULL
+);

@@ -10,7 +10,7 @@ import './bootstrap.js';
 import './styles/admin/chartjs.css';
 import './styles/admin/table.css';
 import './styles/admin/chartjs.css';
-
+import './styles/app.css';
 
 
 

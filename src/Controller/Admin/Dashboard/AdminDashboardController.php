@@ -20,6 +20,7 @@ use App\Controller\Admin\Crud\AlimentationsCrudController;
 use App\Controller\Admin\Crud\RapportsVeterinairesCrudController;
 use App\Document\Animal;
 use App\Entity\AvisHabitats;
+use App\Entity\Horaire;
 use App\Entity\ImgAnimaux;
 use App\Entity\ImgHabitats;
 use App\Entity\ImgServices;
@@ -88,7 +89,9 @@ class AdminDashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Rapports Veterinaires ', 'fa fa-file-circle-check', RapportsVeterinaires::class),
             MenuItem::linkToCrud('Photos ', 'fa fa-images', ImgAnimaux::class),
             MenuItem::linkToRoute('Statistiques', 'fa fa-chart-line', 'statistique_dashboard'),
-        ]);           
+        ]);     
+        
+        yield MenuItem::linkToCrud('Horaire du Zoo', 'fa fa-clock', Horaire::class);
 
     }
     
@@ -125,7 +128,7 @@ class AdminDashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return Assets::new()
-        ->addAssetMapperEntry('app', 'admin')
+        ->addAssetMapperEntry('admin')
         
         ;
     }
