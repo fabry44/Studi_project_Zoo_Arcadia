@@ -61,17 +61,8 @@ services:
     App\EventSubscriber\AccessDeniedSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
-              
     
-                  
-    # App\Service\SetImageService:
-    #     arguments:
-    #         $dsn: '%database.dsn%'
-    #         $user: '%database.user%'
-    #         $password: '%database.password%'
-
-    # App\Service\GetImageService:
-    #     arguments:
-    #         $dsn: '%database.dsn%'
-    #         $user: '%database.user%'
-    #         $password: '%database.password%'
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+              
