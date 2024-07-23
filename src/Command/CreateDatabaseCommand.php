@@ -63,12 +63,10 @@ class CreateDatabaseCommand extends Command
 
     private function createMariaDBDatabase(SymfonyStyle $io, string $dbName): int
     {
-        $dsn = getenv('DATABASE_URL_MARIADB');
-        $user = getenv('DB_USER_MARIADB');
-        $password = getenv('DB_PASSWORD_MARIADB');
+        $dsn = getenv('DATABASE_URL');
 
         try {
-            $pdo = new PDO($dsn, $user, $password);
+            $pdo = new PDO($dsn);
             $pdo->exec("CREATE DATABASE IF NOT EXISTS $dbName");
             $io->success("Base de données '$dbName' créée avec succès (MariaDB).");
 
@@ -108,13 +106,11 @@ class CreateDatabaseCommand extends Command
 
     private function createPostgreSQLDatabase(SymfonyStyle $io, string $dbName): int
     {
-        $dsn = getenv('DATABASE_URL_POSTGRESQL');
-        $user = getenv('DB_USER_POSTGRESQL');
-        $password = getenv('DB_PASSWORD_POSTGRESQL');
+        $dsn = getenv('DATABASE_URL');
 
         try {
             $io->writeln('Connexion à PostgreSQL...');
-            $pdo = new PDO($dsn, $user, $password);
+            $pdo = new PDO($dsn);
             $io->writeln('Connexion réussie.');
 
             // Vérifier si la base de données existe
