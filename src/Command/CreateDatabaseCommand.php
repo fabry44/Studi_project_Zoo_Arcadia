@@ -63,9 +63,9 @@ class CreateDatabaseCommand extends Command
 
     private function createMariaDBDatabase(SymfonyStyle $io, string $dbName): int
     {
-        $dsn = 'mysql:host=localhost;port=3306';
-        $user = 'root';
-        $password = 'password';
+        $dsn = getenv('DATABASE_URL_MARIADB');
+        $user = getenv('DB_USER_MARIADB');
+        $password = getenv('DB_PASSWORD_MARIADB');
 
         try {
             $pdo = new PDO($dsn, $user, $password);
@@ -108,9 +108,9 @@ class CreateDatabaseCommand extends Command
 
     private function createPostgreSQLDatabase(SymfonyStyle $io, string $dbName): int
     {
-        $dsn = 'pgsql:host=127.0.0.1;port=5432';
-        $user = 'postgres';
-        $password = '6986';
+        $dsn = getenv('DATABASE_URL_POSTGRESQL');
+        $user = getenv('DB_USER_POSTGRESQL');
+        $password = getenv('DB_PASSWORD_POSTGRESQL');
 
         try {
             $io->writeln('Connexion à PostgreSQL...');
