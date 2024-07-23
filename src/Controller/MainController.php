@@ -142,7 +142,7 @@ class MainController extends AbstractController
         Retourne les avis de la clientèle validés par l'employé
         */
         $AvisValide = $this->avisRepository->findBy(['valide' => true]);
-        dump($AvisValide);
+    
 
         $avis = new Avis();
         $form = $this->createForm(AvisType::class, $avis);

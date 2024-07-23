@@ -90,7 +90,6 @@ class HabitatsController extends AbstractController
             ];
         }
 
-        dump($habitatsTables);
 
         return $this->render('habitats/index.html.twig', [
             'habitatsTables' => $habitatsTables,

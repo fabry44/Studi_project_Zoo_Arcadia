@@ -31,6 +31,6 @@ class LoginSuccess implements AuthenticationSuccessHandlerInterface
         }
 
         // Redirection par défaut si aucun rôle spécifique n'est trouvé
-        return new RedirectResponse($this->router->generate('default_route'));
+        return new RedirectResponse($this->router->generate('app_main_index'));
     }
 }

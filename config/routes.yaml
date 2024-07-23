@@ -11,3 +11,6 @@ verify_email:
     path: /admin/verify-email/{id}
     controller: App\Controller\Admin\Crud\UtilisateursCrudController::verifyEmail
     methods: [GET]
+homepage:
+    path: /
+    controller: App\Controller\MainController::index

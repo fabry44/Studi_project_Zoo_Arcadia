@@ -116,7 +116,7 @@ class UtilisateursCrudController extends AbstractCrudController
         ];
 
         $user = $this->getContext()->getEntity()->getInstance();
-            // dump($user->getRoles());
+        
         if ($pageName === Crud::PAGE_EDIT) {
             $fields[] = BooleanField::new('isVerified')
                 ->setLabel('Email vérifié')                
