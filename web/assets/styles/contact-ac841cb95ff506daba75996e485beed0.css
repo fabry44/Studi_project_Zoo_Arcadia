@@ -1,0 +1,15 @@
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* .form-description {
+  margin: 20px 0;
+  font-size: 1.2rem;
+  color: var(--marron);
+  width: 250px;
+  height: 100px;
+} */

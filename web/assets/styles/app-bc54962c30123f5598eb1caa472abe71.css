@@ -1,0 +1,67 @@
+:root {
+    --beige: #C7C8AA;
+    --marronSombre: #322410;
+    --marron: #534619;
+    --vertSombre: #3C5412;
+    --vertClair: rgba(96, 141, 11, 0.743);
+    --vert2: #4C6C14;
+    --bs-primary: #2187c3;
+
+    --text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+html {
+    font-size: 1rem;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0 20px 0;
+    padding: 0;
+    word-spacing: 0.4em;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    color: var(--marron_foncé);
+    text-shadow: var(--text-shadow);
+}
+
+p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    word-spacing: 0.2em;
+}
+
+a {
+    text-decoration: none;
+    color: var(--marron);
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+
+
+
+
+
+
+
