@@ -122,19 +122,19 @@ class CreateDatabaseCommand extends Command
 
             // Vérifier si la base de données existe
             $io->writeln('Vérification de l\'existence de la base de données...');
-            $result = $pdo->query("SELECT 1 FROM pg_database WHERE datname = '$dbName'");
+            $result = $pdo->query("SELECT 1 FROM pg_database WHERE datname = '$database'");
             if (!$result->fetch()) {
                 // Créer la base de données si elle n'existe pas
                 $io->writeln('Création de la base de données...');
-                $pdo->exec("CREATE DATABASE $dbName");
-                $io->success("Base de données '$dbName' créée avec succès (PostgreSQL).");
+                $pdo->exec("CREATE DATABASE $database");
+                $io->success("Base de données '$database' créée avec succès (PostgreSQL).");
             } else {
-                $io->success("Base de données '$dbName' déjà existante (PostgreSQL).");
+                $io->success("Base de données '$database' déjà existante (PostgreSQL).");
             }
 
             // Connexion à la base de données nouvellement créée
             $io->writeln('Connexion à la nouvelle base de données...');
-            $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbName", $user, $password);
+            $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$database", $user, $password);
             $io->writeln('Connexion réussie à la nouvelle base de données.');
 
             // Lire et exécuter le fichier create_database_pgsql.sql pour PostgreSQL
