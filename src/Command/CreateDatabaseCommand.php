@@ -115,11 +115,9 @@ class CreateDatabaseCommand extends Command
         $password = $dbOptions['pass'];
         $database = ltrim($dbOptions['path'], '/');
 
-        $dsn = "pgsql:host=$host;port=$port;dbname=$database";
-
         try {
             $io->writeln('Connexion à PostgreSQL...');
-            $pdo = new PDO($dsn, $user, $password);
+            $pdo = new PDO("pgsql:host=$host;port=$port;dbname=postgres", $user, $password);
             $io->writeln('Connexion réussie.');
 
             // Vérifier si la base de données existe
@@ -136,7 +134,7 @@ class CreateDatabaseCommand extends Command
 
             // Connexion à la base de données nouvellement créée
             $io->writeln('Connexion à la nouvelle base de données...');
-            $pdo = new PDO("pgsql:host=127.0.0.1;port=5432;dbname=$dbName", $user, $password);
+            $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbName", $user, $password);
             $io->writeln('Connexion réussie à la nouvelle base de données.');
 
             // Lire et exécuter le fichier create_database_pgsql.sql pour PostgreSQL
