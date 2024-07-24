@@ -1,0 +1,10 @@
+import controller_0 from "../ux-chartjs/controller.js";
+import controller_1 from "../ux-turbo/turbo_controller.js";
+import controller_2 from "../ux-turbo/turbo_stream_controller.js";
+import controller_3 from "../../controllers/animal_controller.js";
+import controller_4 from "../../controllers/habitat_controller.js";
+import controller_5 from "../../controllers/hello_controller.js";
+import controller_6 from "../../controllers/rating_controller.js";
+export const eagerControllers = {"symfony--ux-chartjs--chart": controller_0, "symfony--ux-turbo--turbo-core": controller_1, "symfony--ux-turbo--mercure-turbo-stream": controller_2, "animal": controller_3, "habitat": controller_4, "hello": controller_5, "rating": controller_6};
+export const lazyControllers = {};
+export const isApplicationDebug = false;
