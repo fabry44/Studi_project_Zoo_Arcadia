@@ -55,7 +55,7 @@
             "ref": "0f18b4decdf5695d692c1d0dfd65516a07a6adf1"
         },
         "files": [
-            "./public/.htaccess"
+            "./web/.htaccess"
         ]
     },
     "symfony/asset-mapper": {
@@ -123,7 +123,7 @@
             "./config/preload.php",
             "./config/routes/framework.yaml",
             "./config/services.yaml",
-            "./public/index.php",
+            "./web/index.php",
             "./src/Controller/.gitignore",
             "./src/Kernel.php"
         ]

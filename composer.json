@@ -87,12 +87,12 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %WEB_DIR%": "symfony-cmd",
+            "assets:install web": "symfony-cmd",
             "importmap:install": "symfony-cmd",
             "requirements-checker": "script"
         },
         "post-install-cmd": [
-            "@auto-scripts" 
+            "@auto-scripts"
         ],
         "post-update-cmd": [
             "@auto-scripts"
