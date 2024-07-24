@@ -107,10 +107,19 @@ class CreateDatabaseCommand extends Command
     private function createPostgreSQLDatabase(SymfonyStyle $io, string $dbName): int
     {
         $dsn = getenv('DATABASE_URL');
+        $dbOptions = parse_url($dsn);
+
+        $host = $dbOptions['host'];
+        $port = $dbOptions['port'];
+        $user = $dbOptions['user'];
+        $password = $dbOptions['pass'];
+        $database = ltrim($dbOptions['path'], '/');
+
+        $dsn = "pgsql:host=$host;port=$port;dbname=$database";
 
         try {
             $io->writeln('Connexion à PostgreSQL...');
-            $pdo = new PDO($dsn);
+            $pdo = new PDO($dsn, $user, $password);
             $io->writeln('Connexion réussie.');
 
             // Vérifier si la base de données existe
