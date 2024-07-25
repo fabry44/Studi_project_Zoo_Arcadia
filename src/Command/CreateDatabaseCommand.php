@@ -111,7 +111,7 @@ class CreateDatabaseCommand extends Command
         }
     }
 
-    private function createPostgreSQLDatabase(SymfonyStyle $io, string $database): int
+    private function createPostgreSQLDatabase(SymfonyStyle $io): int
     {
         $dsn = getenv('DATABASE_URL');
         $dbOptions = parse_url($dsn);
