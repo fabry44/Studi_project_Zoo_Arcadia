@@ -1,3 +1,3 @@
 # Ignore migration files
 /migrations/*.sql
-/migrations/*.php
+# /migrations/*.php
