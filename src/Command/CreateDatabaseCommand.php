@@ -49,7 +49,7 @@ class CreateDatabaseCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $dbType = $input->getArgument('db_type');
-        // $database = 'arcadia_db';
+        
 
         if ($dbType === 'mariadb') {
             return $this->createMariaDBDatabase($io);
@@ -63,87 +63,72 @@ class CreateDatabaseCommand extends Command
 
     private function createMariaDBDatabase(SymfonyStyle $io): int
     {
-        $dsn = getenv('DATABASE_URL');
-        $dbOptions = parse_url($dsn);
+        $db = parse_url(getenv("DATABASE_URL"));
 
-        $host = $dbOptions['host'];
-        $port = $dbOptions['port'];
-        $user = $dbOptions['user'];
-        $password = $dbOptions['pass'];
-        $database = ltrim($dbOptions['path'], '/');
+        $host = $db["host"];
+        $port = $db["port"];
+        $user = $db["user"];
+        $password = $db["pass"];
+        $database = ltrim($db["path"], "/");
+
+        $dsn = sprintf("mysql:host=%s;port=%s;dbname=%s", $host, $port, $database);
 
         try {
-            $pdo = new PDO($dsn);
-            $pdo->exec("CREATE DATABASE IF NOT EXISTS $database");
-            $io->success("Base de données '$database' créée avec succès (MariaDB).");
+            $io->writeln('Connexion à MariaDB...');
+            $pdo = new PDO($dsn, $user, $password);
+            $io->writeln('Connexion réussie.');
 
-            // Lire et exécuter le fichier SQL pour MariaDB
+            // Lire et exécuter le fichier create_database_mariadb.sql pour MariaDB
+            $io->writeln('Lecture du fichier create_database_mariadb.sql');
             $sql = file_get_contents('create_database_mariadb.sql');
             if (!$sql) {
-                $io->error('Le fichier SQL pour MariaDB est vide.');
+                $io->error('Le fichier create_database_mariadb.sql pour MariaDB est vide.');
                 return Command::FAILURE;
             }
 
-            $pdo->exec("USE $database");
+            $io->writeln('Exécution du script create_database_mariadb.sql');
             $pdo->exec($sql);
-            $io->success('Base de données créée avec succès (MariaDB).');
+            $io->success('Tables créées avec succès (MariaDB).');
+
+            // Lire et exécuter le fichier import_data_mariadb.sql pour MariaDB
+            $io->writeln('Lecture du fichier import_data_mariadb.sql');
+            $importData = file_get_contents('import_data_mariadb.sql');
+            if (!$importData) {
+                $io->error('Le fichier import_data_mariadb.sql pour MariaDB est vide.');
+                return Command::FAILURE;
+            }
+
+            $io->writeln('Exécution du script import_data_mariadb.sql');
+            $pdo->exec($importData);
+            $io->success('Données insérées avec succès (MariaDB).');
+
             return Command::SUCCESS;
         } catch (\PDOException $e) {
-            $io->error('Impossible de créer la base de données MariaDB: ' . $e->getMessage());
+            $io->error('Impossible de se connecter à la base de données MariaDB: ' . $e->getMessage());
             return Command::FAILURE;
-        }
-
-        // Importation des données pour MariadB
-
-        $importData = file_get_contents('import_data_mariadb.sql');
-        if (!$importData) {
-            $io->error('Le fichier SQL est vide.');
-            return Command::FAILURE;
-        }
-        
-        try {
-            $stmt = $pdo->prepare($importData);  
-            $stmt->execute();
-            $io->success('les donnée ont été importées avec succès.');
-        } catch (\PDOException $e) {
-            $io->error('Échec de l\'exécution du script SQL: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            $io->error('Une erreur inattendue s\'est produite: ' . $e->getMessage());
             return Command::FAILURE;
         }
     }
 
+
     private function createPostgreSQLDatabase(SymfonyStyle $io): int
     {
-        $dsn = getenv('DATABASE_URL');
-        $dbOptions = parse_url($dsn);
+        $db = parse_url(getenv("DATABASE_URL"));
 
-        $host = $dbOptions['host'];
-        $port = $dbOptions['port'];
-        $user = $dbOptions['user'];
-        $password = $dbOptions['pass'];
-        $database = ltrim($dbOptions['path'], '/');
+        $host = $db["host"];
+        $port = $db["port"];
+        $user = $db["user"];
+        $password = $db["pass"];
+        $database = ltrim($db["path"], "/");
 
+        $dsn = sprintf("pgsql:host=%s;port=%s;dbname=%s", $host, $port, $database);
 
         try {
             $io->writeln('Connexion à PostgreSQL...');
-            $pdo = new PDO("pgsql:host=$host;port=$port;database=postgres", $user, $password);
+            $pdo = new PDO($dsn, $user, $password);
             $io->writeln('Connexion réussie.');
-
-            // Vérifier si la base de données existe
-            $io->writeln('Vérification de l\'existence de la base de données...');
-            $result = $pdo->query("SELECT 1 FROM pg_database WHERE datname = '$database'");
-            if (!$result->fetch()) {
-                // Créer la base de données si elle n'existe pas
-                $io->writeln('Création de la base de données...');
-                $pdo->exec("CREATE DATABASE $database");
-                $io->success("Base de données '$database' créée avec succès (PostgreSQL).");
-            } else {
-                $io->success("Base de données '$database' déjà existante (PostgreSQL).");
-            }
-
-            // Connexion à la base de données nouvellement créée
-            $io->writeln('Connexion à la nouvelle base de données...');
-            $pdo = new PDO("pgsql:host=$host;port=$port;database=$database", $user, $password);
-            $io->writeln('Connexion réussie à la nouvelle base de données.');
 
             // Lire et exécuter le fichier create_database_pgsql.sql pour PostgreSQL
             $io->writeln('Lecture du fichier create_database_pgsql.sql');
@@ -171,7 +156,7 @@ class CreateDatabaseCommand extends Command
 
             return Command::SUCCESS;
         } catch (\PDOException $e) {
-            $io->error('Impossible de créer la base de données PostgreSQL: ' . $e->getMessage());
+            $io->error('Impossible de se connecter à la base de données PostgreSQL: ' . $e->getMessage());
             return Command::FAILURE;
         } catch (\Exception $e) {
             $io->error('Une erreur inattendue s\'est produite: ' . $e->getMessage());
