@@ -23,7 +23,6 @@ CREATE TABLE public.alimentations (
     nourriture character varying(255) NOT NULL,
     quantite double precision NOT NULL
 );
-ALTER TABLE public.alimentations OWNER TO postgres;
 COMMENT ON COLUMN public.alimentations.date IS '(DC2Type:date_immutable)';
 
 -- Séquence `alimentations_id_seq`
@@ -34,7 +33,6 @@ CREATE SEQUENCE public.alimentations_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.alimentations_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.alimentations_id_seq OWNED BY public.alimentations.id;
 
 -- Table `animaux`
@@ -44,7 +42,6 @@ CREATE TABLE public.animaux (
     race_id integer NOT NULL,
     habitat_id integer NOT NULL
 );
-ALTER TABLE public.animaux OWNER TO postgres;
 
 -- Séquence `animaux_id_seq`
 CREATE SEQUENCE public.animaux_id_seq
@@ -54,7 +51,6 @@ CREATE SEQUENCE public.animaux_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.animaux_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.animaux_id_seq OWNED BY public.animaux.id;
 
 -- Table `avis`
@@ -66,7 +62,6 @@ CREATE TABLE public.avis (
     avis text NOT NULL,
     valide boolean NOT NULL
 );
-ALTER TABLE public.avis OWNER TO postgres;
 
 -- Séquence `avis_id_seq`
 CREATE SEQUENCE public.avis_id_seq
@@ -76,7 +71,6 @@ CREATE SEQUENCE public.avis_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.avis_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.avis_id_seq OWNED BY public.avis.id;
 
 -- Table `avis_habitats`
@@ -87,7 +81,6 @@ CREATE TABLE public.avis_habitats (
     veterinaire_id integer,
     avis text NOT NULL
 );
-ALTER TABLE public.avis_habitats OWNER TO postgres;
 COMMENT ON COLUMN public.avis_habitats.date IS '(DC2Type:date_immutable)';
 
 -- Séquence `avis_habitats_id_seq`
@@ -98,7 +91,6 @@ CREATE SEQUENCE public.avis_habitats_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.avis_habitats_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.avis_habitats_id_seq OWNED BY public.avis_habitats.id;
 
 -- Table `habitats`
@@ -107,7 +99,6 @@ CREATE TABLE public.habitats (
     nom character varying(255) NOT NULL,
     descript text NOT NULL
 );
-ALTER TABLE public.habitats OWNER TO postgres;
 
 -- Séquence `habitats_id_seq`
 CREATE SEQUENCE public.habitats_id_seq
@@ -117,7 +108,6 @@ CREATE SEQUENCE public.habitats_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.habitats_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.habitats_id_seq OWNED BY public.habitats.id;
 
 -- Table `horaire`
@@ -127,7 +117,6 @@ CREATE TABLE public.horaire (
     ouvre time(0) without time zone NOT NULL,
     ferme time(0) without time zone NOT NULL
 );
-ALTER TABLE public.horaire OWNER TO postgres;
 
 -- Séquence `horaire_id_seq`
 CREATE SEQUENCE public.horaire_id_seq
@@ -136,7 +125,7 @@ CREATE SEQUENCE public.horaire_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.horaire_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.horaire_id_seq OWNED BY public.horaire.id;
 
 -- Table `img_animaux`
 CREATE TABLE public.img_animaux (
@@ -144,7 +133,6 @@ CREATE TABLE public.img_animaux (
     animal_id integer NOT NULL,
     image_name character varying(255)
 );
-ALTER TABLE public.img_animaux OWNER TO postgres;
 
 -- Séquence `img_animaux_id_seq`
 CREATE SEQUENCE public.img_animaux_id_seq
@@ -154,7 +142,6 @@ CREATE SEQUENCE public.img_animaux_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.img_animaux_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.img_animaux_id_seq OWNED BY public.img_animaux.id;
 
 -- Table `img_habitats`
@@ -163,7 +150,6 @@ CREATE TABLE public.img_habitats (
     habitat_id integer NOT NULL,
     image_name character varying(255)
 );
-ALTER TABLE public.img_habitats OWNER TO postgres;
 
 -- Séquence `img_habitats_id_seq`
 CREATE SEQUENCE public.img_habitats_id_seq
@@ -173,7 +159,6 @@ CREATE SEQUENCE public.img_habitats_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.img_habitats_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.img_habitats_id_seq OWNED BY public.img_habitats.id;
 
 -- Table `img_services`
@@ -182,7 +167,6 @@ CREATE TABLE public.img_services (
     services_id integer NOT NULL,
     image_name character varying(255)
 );
-ALTER TABLE public.img_services OWNER TO postgres;
 
 -- Séquence `img_services_id_seq`
 CREATE SEQUENCE public.img_services_id_seq
@@ -192,7 +176,6 @@ CREATE SEQUENCE public.img_services_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.img_services_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.img_services_id_seq OWNED BY public.img_services.id;
 
 -- Table `races`
@@ -200,7 +183,6 @@ CREATE TABLE public.races (
     id integer NOT NULL,
     label character varying(255) NOT NULL
 );
-ALTER TABLE public.races OWNER TO postgres;
 
 -- Séquence `races_id_seq`
 CREATE SEQUENCE public.races_id_seq
@@ -210,7 +192,6 @@ CREATE SEQUENCE public.races_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.races_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.races_id_seq OWNED BY public.races.id;
 
 -- Table `rapports_veterinaires`
@@ -224,7 +205,6 @@ CREATE TABLE public.rapports_veterinaires (
     grammage double precision NOT NULL,
     detail text
 );
-ALTER TABLE public.rapports_veterinaires OWNER TO postgres;
 COMMENT ON COLUMN public.rapports_veterinaires.date IS '(DC2Type:date_immutable)';
 
 -- Séquence `rapports_veterinaires_id_seq`
@@ -235,7 +215,6 @@ CREATE SEQUENCE public.rapports_veterinaires_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.rapports_veterinaires_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.rapports_veterinaires_id_seq OWNED BY public.rapports_veterinaires.id;
 
 -- Table `services`
@@ -244,7 +223,6 @@ CREATE TABLE public.services (
     nom character varying(255) NOT NULL,
     descript text NOT NULL
 );
-ALTER TABLE public.services OWNER TO postgres;
 
 -- Séquence `services_id_seq`
 CREATE SEQUENCE public.services_id_seq
@@ -254,7 +232,6 @@ CREATE SEQUENCE public.services_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.services_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.services_id_seq OWNED BY public.services.id;
 
 -- Table `utilisateurs`
@@ -267,7 +244,6 @@ CREATE TABLE public.utilisateurs (
     password character varying(255) NOT NULL,
     is_verified boolean NOT NULL
 );
-ALTER TABLE public.utilisateurs OWNER TO postgres;
 
 -- Séquence `utilisateurs_id_seq`
 CREATE SEQUENCE public.utilisateurs_id_seq
@@ -277,7 +253,6 @@ CREATE SEQUENCE public.utilisateurs_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE public.utilisateurs_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.utilisateurs_id_seq OWNED BY public.utilisateurs.id;
 
 -- Définir les valeurs des séquences
