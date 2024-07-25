@@ -1,13 +1,7 @@
--- Configurations initiales
--- Ces commandes sont spécifiques à MySQL/MariaDB et ne sont pas nécessaires pour PostgreSQL
--- SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
--- START TRANSACTION;
--- SET time_zone = "+00:00";
-
 BEGIN;
 
 -- Chargement des données de la table `utilisateurs`
-INSERT INTO utilisateurs (username, nom, prenom, password, roles, is_verified) VALUES
+INSERT INTO public.utilisateurs (username, nom, prenom, password, roles, is_verified) VALUES
 ('admin@gmail.com', 'L''administrateur', 'UserAdmin', '$2y$13$vDdTvu9ixbwkU3HlEY/2DOtQw/k5UBy0.GAJOTP/AYa9ip8bXYybS', '["ROLE_ADMIN"]'::jsonb, TRUE),
 ('veterinaire@gmail.com', 'Le vétérinaire', 'UserVétérinaire', '$2y$13$vDdTvu9ixbwkU3HlEY/2DOtQw/k5UBy0.GAJOTP/AYa9ip8bXYybS', '["ROLE_VETERINAIRE"]'::jsonb, TRUE),
 ('employe@gmail.com', 'L''employé', 'UserEmployé', '$2y$13$KkISQjBj.0hdQaXABASw3O3QKkpD0kLQflLWeyHe6k6Ext.Ew6WRC', '["ROLE_EMPLOYE"]'::jsonb, TRUE),
@@ -15,13 +9,13 @@ INSERT INTO utilisateurs (username, nom, prenom, password, roles, is_verified) V
 ('nouvel.veterinaire@gmail.com', 'Nouveau', 'Vétérinaire', '$2y$13$vDdTvu9ixbwkU3HlEY/2DOtQw/k5UBy0.GAJOTP/AYa9ip8bXYybS', '["ROLE_VETERINAIRE"]'::jsonb, TRUE);
 
 -- Chargement des données pour les habitats
-INSERT INTO habitats (nom, descript) VALUES
+INSERT INTO public.habitats (nom, descript) VALUES
 ('Savane', 'Un vaste paysage ouvert, dominé par des herbes et des arbustes, habituellement peuplé par des grands mammifères tels que lions et girafes. le climat est chaud et sec. les visiteurs peuvent observer les animaux de loin et de près selon les zones de vision.'),
 ('Jungle', 'Dense forêt tropicale, riche en diversité biologique, abritant de nombreuses espèces d''oiseaux et de félins. Les visiteurs peuvent explorer les sentiers sinueux et découvrir des animaux cachés dans la végétation dense.'),
 ('Marais', 'Zone humide caractérisée par des eaux stagnantes et une forte présence de végétation aquatique, foyer de nombreux reptiles et oiseaux. Les visiteurs peuvent observer les animaux nager et se prélasser au soleil. Des sentiers surélevés permettent une vue panoramique.');
 
 -- Insertion des images pour les habitats
-INSERT INTO img_habitats (habitat_id, image_name) VALUES
+INSERT INTO public.img_habitats (habitat_id, image_name) VALUES
 (1, 'savane-669056118970f967575288.jpeg'),     -- Image pour la Savane
 (1, 'savane3-6691584f671df631628913.jpeg'),    -- Autre image pour la Savane
 (1, 'savane-669ba2676e5be066955077.jpeg'),     -- Autre image pour la Savane
@@ -31,13 +25,13 @@ INSERT INTO img_habitats (habitat_id, image_name) VALUES
 (3, 'maris4-66910683ef56c507801468.jpeg');     -- Autre image pour le Marais
 
 -- Chargement des données pour les races
-INSERT INTO races (label) VALUES
+INSERT INTO public.races (label) VALUES
 ('Lion'), ('Singe'), ('Girafe'), 
 ('Jaguar'), ('Perroquet'), ('Toucan'), 
 ('Alligator'), ('Héron'), ('Castor');
 
 -- Insertion des animaux avec les associations avec leurs habitats et races correspondantes
-INSERT INTO animaux (prenom, race_id, habitat_id) VALUES
+INSERT INTO public.animaux (prenom, race_id, habitat_id) VALUES
 ('Simba', 1, 1), -- Lion dans la Savane
 ('Cesar', 2, 1), -- Singe dans la Savane
 ('Gerry', 3, 1), -- Girafe dans la Savane
@@ -49,7 +43,7 @@ INSERT INTO animaux (prenom, race_id, habitat_id) VALUES
 ('Bucky', 9, 3); -- Castor dans les Marais
 
 -- Insertion des images pour chaque animal
-INSERT INTO img_animaux (animal_id, image_name) VALUES
+INSERT INTO public.img_animaux (animal_id, image_name) VALUES
 (1, 'lion-669123a900693689181035.jpeg'),      -- Image du Lion
 (2, 'singe-6693d90f184fd337137806.jpeg'),     -- Image du Singe
 (3, 'girafe-6693d92dca587270771807.jpeg'),    -- Image de la Girafe
@@ -62,20 +56,19 @@ INSERT INTO img_animaux (animal_id, image_name) VALUES
 (9, 'castor-6693e55b328d0019281235.jpeg');    -- Image du Castor
 
 -- Insertion des services offerts par le parc
-INSERT INTO services (nom, descript) VALUES
+INSERT INTO public.services (nom, descript) VALUES
 ('Restauration', 'Offre une variété de repas et snacks pour les visiteurs tout au long de leur visite, avec des options pour tous les goûts et préférences alimentaires.'),
 ('Visite guidée', 'Explorez les habitats avec un guide expert qui partagera des anecdotes fascinantes sur les animaux et leur comportement, enrichissant votre expérience. Vous pouvez poser des questions et interagir avec les animaux.'),
 ('Petit train', 'Profitez gratuitement d''un tour du zoo en petit train, parfait pour les familles avec enfants, offrant une vue panoramique de tous les habitats sans effort. Les arrêts sont prévus pour observer les animaux de près.');
 
 -- Insertion des images pour les services offerts par le parc
-INSERT INTO img_services (service_id, image_name) VALUES
+INSERT INTO public.img_services (services_id, image_name) VALUES
 (1, 'restauration-6693ad7c9de53481707361.jpeg'),  -- Image pour Restauration
 (2, 'visite-guide-6693ad92468dd572283529.jpeg'),   -- Image pour Visite guidée
 (3, 'petit-train-6693adaa629be293813458.jpeg');    -- Image pour Petit train
 
-
 -- Insertion des avis sur les habitats par les vétérinaires
-INSERT INTO avis_habitats (habitat_id, date, veterinaire_id, avis) VALUES
+INSERT INTO public.avis_habitats (habitat_id, date, veterinaire_id, avis) VALUES
 (1, CURRENT_TIMESTAMP, 2, 'Habitat en excellente condition, adapté aux espèces qu''il accueille.'),
 (1, CURRENT_TIMESTAMP, 5, 'La savane est bien entretenue, mais pourrait bénéficier de plus de zones ombragées.'),
 (2, CURRENT_TIMESTAMP, 2, 'La jungle présente une diversité biologique remarquable, bien entretenue.'),
@@ -84,7 +77,7 @@ INSERT INTO avis_habitats (habitat_id, date, veterinaire_id, avis) VALUES
 (3, CURRENT_TIMESTAMP, 5, 'L''environnement aquatique est idéal pour les reptiles, bien que l''eau pourrait être plus propre.');
 
 -- Insertion des avis
-INSERT INTO avis (employe_id, pseudo, rating, avis, valide) VALUES
+INSERT INTO public.avis (employe_id, pseudo, rating, avis, valide) VALUES
 (3, 'Henri.D', 5, 'J''ai adoré la visite guidée, très instructive.', TRUE),
 (4, 'L''inconnu',4 , 'Les habitats sont très bien conçus, les animaux semblent heureux.', TRUE),
 (5, 'Moogli',3 , 'Les zones de restauration sont propres et accueillantes.', TRUE),
@@ -97,7 +90,7 @@ INSERT INTO avis (employe_id, pseudo, rating, avis, valide) VALUES
 (3, 'un autre visiteur',4 , 'La propreté des installations est impeccable.', TRUE);
 
 -- Alimentation des animaux (exemple)
-INSERT INTO alimentations (animal_id, employe_id, date, nourriture, quantite) VALUES
+INSERT INTO public.alimentations (animal_id, employe_id, date, nourriture, quantite) VALUES
 (1, 3, CURRENT_TIMESTAMP, 'Viande', 5.0),
 (2, 3, CURRENT_TIMESTAMP, 'Fruits', 1.5),
 (3, 3, CURRENT_TIMESTAMP, 'Feuilles', 10.0),
@@ -109,7 +102,7 @@ INSERT INTO alimentations (animal_id, employe_id, date, nourriture, quantite) VA
 (9, 4, CURRENT_TIMESTAMP, 'Bois', 1.0);
 
 -- Rapports vétérinaires pour chaque animal en exemple
-INSERT INTO rapports_veterinaires (animal_id, date, veterinaire_id, etat, nourriture, grammage, detail) VALUES
+INSERT INTO public.rapports_veterinaires (animal_id, date, veterinaire_id, etat, nourriture, grammage, detail) VALUES
 (1, CURRENT_TIMESTAMP, 2, 'Sain', 'Viande', 5, 'Le lion, nommé Simba, affiche une vitalité remarquable avec un pelage lustré et des signes clairs de bonne santé nutritionnelle et physique.'),
 (1, CURRENT_TIMESTAMP, 5, 'Sain', 'Viande', 5, 'Simba est extrêmement actif et sociable au sein de son groupe, montrant une agilité et une force exemplaires lors des interactions.'),
 (2, CURRENT_TIMESTAMP, 2, 'Sain', 'Fruits', 1.5, 'Cesar le singe présente une excellente dextérité et curiosité, grimpant fréquemment et explorant son environnement avec vigueur.'),
@@ -130,7 +123,7 @@ INSERT INTO rapports_veterinaires (animal_id, date, veterinaire_id, etat, nourri
 (9, CURRENT_TIMESTAMP, 5, 'Sain', 'Bois', 1, 'Son interaction avec l''environnement et d''autres castors est positive, indiquant un état de santé stable et actif.');
 
 -- Horaires d'ouverture du parc
-INSERT INTO horaire (id, jour, ouvre, ferme) VALUES
+INSERT INTO public.horaire (id, jour, ouvre, ferme) VALUES
 (1, 'Lundi', '09:00:00', '18:00:00'),
 (2, 'Mardi', '09:00:00', '18:00:00'),
 (3, 'Mercredi', '09:00:00', '18:00:00'),
@@ -139,5 +132,4 @@ INSERT INTO horaire (id, jour, ouvre, ferme) VALUES
 (6, 'Samedi', '10:00:00', '20:00:00'),
 (7, 'Dimanche', '10:00:00', '20:00:00');
 
--- Fermeture de la transaction pour garantir l'intégrité
 COMMIT;
