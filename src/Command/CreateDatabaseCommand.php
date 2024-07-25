@@ -49,26 +49,33 @@ class CreateDatabaseCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $dbType = $input->getArgument('db_type');
-        $dbName = 'arcadia_db';
+        // $database = 'arcadia_db';
 
         if ($dbType === 'mariadb') {
-            return $this->createMariaDBDatabase($io, $dbName);
+            return $this->createMariaDBDatabase($io);
         } elseif ($dbType === 'postgresql') {
-            return $this->createPostgreSQLDatabase($io, $dbName);
+            return $this->createPostgreSQLDatabase($io);
         } else {
             $io->error('Type de base de données non supporté. Utilisez "mariadb" ou "postgresql".');
             return Command::FAILURE;
         }
     }
 
-    private function createMariaDBDatabase(SymfonyStyle $io, string $dbName): int
+    private function createMariaDBDatabase(SymfonyStyle $io): int
     {
         $dsn = getenv('DATABASE_URL');
+        $dbOptions = parse_url($dsn);
+
+        $host = $dbOptions['host'];
+        $port = $dbOptions['port'];
+        $user = $dbOptions['user'];
+        $password = $dbOptions['pass'];
+        $database = ltrim($dbOptions['path'], '/');
 
         try {
             $pdo = new PDO($dsn);
-            $pdo->exec("CREATE DATABASE IF NOT EXISTS $dbName");
-            $io->success("Base de données '$dbName' créée avec succès (MariaDB).");
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS $database");
+            $io->success("Base de données '$database' créée avec succès (MariaDB).");
 
             // Lire et exécuter le fichier SQL pour MariaDB
             $sql = file_get_contents('create_database_mariadb.sql');
@@ -77,7 +84,7 @@ class CreateDatabaseCommand extends Command
                 return Command::FAILURE;
             }
 
-            $pdo->exec("USE $dbName");
+            $pdo->exec("USE $database");
             $pdo->exec($sql);
             $io->success('Base de données créée avec succès (MariaDB).');
             return Command::SUCCESS;
@@ -104,7 +111,7 @@ class CreateDatabaseCommand extends Command
         }
     }
 
-    private function createPostgreSQLDatabase(SymfonyStyle $io, string $dbName): int
+    private function createPostgreSQLDatabase(SymfonyStyle $io, string $database): int
     {
         $dsn = getenv('DATABASE_URL');
         $dbOptions = parse_url($dsn);
@@ -115,9 +122,10 @@ class CreateDatabaseCommand extends Command
         $password = $dbOptions['pass'];
         $database = ltrim($dbOptions['path'], '/');
 
+
         try {
             $io->writeln('Connexion à PostgreSQL...');
-            $pdo = new PDO("pgsql:host=$host;port=$port;dbname=postgres", $user, $password);
+            $pdo = new PDO("pgsql:host=$host;port=$port;database=postgres", $user, $password);
             $io->writeln('Connexion réussie.');
 
             // Vérifier si la base de données existe
@@ -134,7 +142,7 @@ class CreateDatabaseCommand extends Command
 
             // Connexion à la base de données nouvellement créée
             $io->writeln('Connexion à la nouvelle base de données...');
-            $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$database", $user, $password);
+            $pdo = new PDO("pgsql:host=$host;port=$port;database=$database", $user, $password);
             $io->writeln('Connexion réussie à la nouvelle base de données.');
 
             // Lire et exécuter le fichier create_database_pgsql.sql pour PostgreSQL
