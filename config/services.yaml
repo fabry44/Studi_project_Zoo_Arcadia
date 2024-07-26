@@ -62,10 +62,10 @@ services:
         tags:
             - { name: 'kernel.event_subscriber' }
     
-    App\EventListener\ExceptionListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+    # App\EventListener\ExceptionListener:
+    #     tags:
+    #         - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
               
-    App\Form\: 
-        resource: '../src/Form'
-        tags: ['form.type']
+    # App\Form\: 
+    #     resource: '../src/Form'
+    #     tags: ['form.type']

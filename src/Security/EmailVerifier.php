@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
@@ -14,15 +15,27 @@ use Psr\Log\LoggerInterface;
 
 class EmailVerifier
 {
+    private $verifyEmailHelper;
+    private $mailer;
+    private $entityManager;
+    private $requestStack;
+    private $logger;
+
     public function __construct(
-        private VerifyEmailHelperInterface $verifyEmailHelper,
-        private MailerInterface $mailer,
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        MailerInterface $mailer,
+        EntityManagerInterface $entityManager,
+        RequestStack $requestStack,
+        LoggerInterface $logger
     ) {
+        $this->verifyEmailHelper = $verifyEmailHelper;
+        $this->mailer = $mailer;
+        $this->entityManager = $entityManager;
+        $this->requestStack = $requestStack;
+        $this->logger = $logger;
     }
 
-    public function sendEmailConfirmation(string $verifyEmailRouteName, Utilisateurs $user, TemplatedEmail $email, LoggerInterface $logger): void
+    public function sendEmailConfirmation(string $verifyEmailRouteName, Utilisateurs $user, TemplatedEmail $email): void
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             $verifyEmailRouteName,
@@ -43,58 +56,28 @@ class EmailVerifier
         $plainTextBody = $email->getTextBody();
         $htmlBody = $email->getHtmlBody();
 
-
-
-        // Utiliser Guzzle pour envoyer l'email via l'API HTTP de Mailgun
-            $client = new Client();
-            $apiKey = $_ENV['MAILGUN_API_KEY'];
-            $domain = $_ENV['MAILGUN_DOMAIN'];
-            $url = "https://api.mailgun.net/v3/$domain/messages";
-            
-            try {
-                $response = $client->post($url, [
-                    'auth' => ['api', $apiKey],
-                    'form_params' => [
-                        'from' => $_ENV['MAILGUN_FROM'],
-                        'to' => $user->getUsername(),
-                        'subject' => $email->getSubject(),
-                        'text' => $plainTextBody,
-                        'html' => $htmlBody
-                    ]
-                ]);
-
-                $logger->info('Mailgun response: ' . $response->getBody());
-                
-            } catch (\Exception $e) {
-                $logger->error('Error sending email: ' . $e->getMessage());
-                throw new \Exception('Une erreur est survenue lors de l\'envoi de l\'email de confirmation.');
-            }
-
-
-
-
-
-
         // Utiliser Guzzle pour envoyer l'email via l'API HTTP de Mailgun
         $client = new Client();
         $apiKey = $_ENV['MAILGUN_API_KEY'];
         $domain = $_ENV['MAILGUN_DOMAIN'];
         $url = "https://api.mailgun.net/v3/$domain/messages";
 
-        $params = [
-            'auth' => ['api', $apiKey],
-            'form_params' => [
-                'from' => $_ENV['MAILGUN_FROM'],
-                'to' => $user->getUsername(),
-                'subject' => $email->getSubject(),
-                'text' => $plainTextBody,
-                'html' => $htmlBody
-            ]
-        ];
-
         try {
-            $client->post($url, $params);
+            $response = $client->post($url, [
+                'auth' => ['api', $apiKey],
+                'form_params' => [
+                    'from' => $_ENV['MAILGUN_FROM'],
+                    'to' => $user->getUsername(),
+                    'subject' => $email->getSubject(),
+                    'text' => $plainTextBody,
+                    'html' => $htmlBody,
+                ],
+            ]);
+            $session = $this->requestStack->getSession();
+            $session->getFlashBag()->add('success', 'Votre demande a été envoyée avec succès.');
+            $this->logger->info('Mailgun response: ' . $response->getBody());
         } catch (\Exception $e) {
+            $this->logger->error('Error sending email: ' . $e->getMessage());
             throw new \Exception('Une erreur est survenue lors de l\'envoi de l\'email de confirmation.');
         }
     }
