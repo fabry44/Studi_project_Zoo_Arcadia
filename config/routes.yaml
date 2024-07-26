@@ -14,3 +14,18 @@ verify_email:
 homepage:
     path: /
     controller: App\Controller\MainController::index
+
+# config/routes.yaml
+admin-dashboard:
+    path: /admin
+    controller: App\Controller\Admin\AdminDashboardController::index
+
+# config/routes.yaml
+employe-dashboard:
+    path: /employee
+    controller: App\Controller\Employee\EmployeDashboardController::index
+
+# config/routes.yaml
+veterinaire-dashboard:
+    path: /veterinaire
+    controller: App\Controller\Veterinaire\VeterinaireDashboardController::index
