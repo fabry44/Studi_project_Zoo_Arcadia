@@ -161,9 +161,14 @@ class UtilisateursCrudController extends AbstractCrudController
             ->subject('Merci de confirmer votre Email')
             ->htmlTemplate('registration/confirmation_email.html.twig');
 
-        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user, $email);
+        $result = $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user, $email, $this->logger);
 
-        $this->addFlash('success', 'Un nouvel email de vérification a été renvoyé.');
+        if ($result) {
+            $this->addFlash('success', 'Un nouvel email de vérification a été renvoyé.');
+        } else {
+            $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de l\'email de vérification.');
+        }
+
         return $this->redirectToRoute('admin_dashboard');
     }
 }
