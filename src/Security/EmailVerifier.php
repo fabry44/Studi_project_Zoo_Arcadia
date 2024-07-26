@@ -11,7 +11,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class EmailVerifier
 {
@@ -19,12 +18,11 @@ class EmailVerifier
         private VerifyEmailHelperInterface $verifyEmailHelper,
         private MailerInterface $mailer,
         private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger,
-        private FlashBagInterface $flashBag
+        private LoggerInterface $logger
     ) {
     }
 
-    public function sendEmailConfirmation(string $verifyEmailRouteName, Utilisateurs $user, TemplatedEmail $email): void
+    public function sendEmailConfirmation(string $verifyEmailRouteName, Utilisateurs $user, TemplatedEmail $email, LoggerInterface $logger): void
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             $verifyEmailRouteName,
@@ -45,28 +43,58 @@ class EmailVerifier
         $plainTextBody = $email->getTextBody();
         $htmlBody = $email->getHtmlBody();
 
+
+
+        // Utiliser Guzzle pour envoyer l'email via l'API HTTP de Mailgun
+            $client = new Client();
+            $apiKey = $_ENV['MAILGUN_API_KEY'];
+            $domain = $_ENV['MAILGUN_DOMAIN'];
+            $url = "https://api.mailgun.net/v3/$domain/messages";
+            
+            try {
+                $response = $client->post($url, [
+                    'auth' => ['api', $apiKey],
+                    'form_params' => [
+                        'from' => $_ENV['MAILGUN_FROM'],
+                        'to' => $user->getUsername(),
+                        'subject' => $email->getSubject(),
+                        'text' => $plainTextBody,
+                        'html' => $htmlBody
+                    ]
+                ]);
+
+                $logger->info('Mailgun response: ' . $response->getBody());
+                
+            } catch (\Exception $e) {
+                $logger->error('Error sending email: ' . $e->getMessage());
+                throw new \Exception('Une erreur est survenue lors de l\'envoi de l\'email de confirmation.');
+            }
+
+
+
+
+
+
         // Utiliser Guzzle pour envoyer l'email via l'API HTTP de Mailgun
         $client = new Client();
         $apiKey = $_ENV['MAILGUN_API_KEY'];
         $domain = $_ENV['MAILGUN_DOMAIN'];
         $url = "https://api.mailgun.net/v3/$domain/messages";
-        
+
+        $params = [
+            'auth' => ['api', $apiKey],
+            'form_params' => [
+                'from' => $_ENV['MAILGUN_FROM'],
+                'to' => $user->getUsername(),
+                'subject' => $email->getSubject(),
+                'text' => $plainTextBody,
+                'html' => $htmlBody
+            ]
+        ];
+
         try {
-            $response = $client->post($url, [
-                'auth' => ['api', $apiKey],
-                'form_params' => [
-                    'from' => $_ENV['MAILGUN_FROM'],
-                    'to' => $user->getUsername(),
-                    'subject' => $email->getSubject(),
-                    'text' => $plainTextBody,
-                    'html' => $htmlBody
-                ]
-            ]);
-            $this->flashBag->add('success', 'Votre demande a été envoyée avec succès.');
-            $this->logger->info('Mailgun response: ' . $response->getBody());
+            $client->post($url, $params);
         } catch (\Exception $e) {
-            $this->logger->error('Error sending email: ' . $e->getMessage());
-            $this->flashBag->add('error', 'Une erreur est survenue lors de l\'envoi de votre demande.');
             throw new \Exception('Une erreur est survenue lors de l\'envoi de l\'email de confirmation.');
         }
     }
