@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Admin\Crud\UtilisateursCrudController;
 use App\Entity\Utilisateurs;
 use App\Repository\UtilisateursRepository;
 use App\Form\RegistrationFormType;

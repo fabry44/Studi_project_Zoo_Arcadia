@@ -26,8 +26,8 @@ class ContactController extends AbstractController
             $mgClient = Mailgun::create($_ENV['MAILGUN_API_KEY']);
             $domain = $_ENV['MAILGUN_DOMAIN'];
             $params = [
-                'from'    => $_ENV['contact@arcadia.com'],
-                'to'      => $_ENV['fabienroy2@gmail.com'],
+                'from'    => $_ENV['mailgun@sandbox1bec5f8fcc1447cab9021d77aab20ed1.mailgun.org'],
+                'to'      => 'Baz <' . $_ENV['MAILGUN_TO'] . '>',
                 'subject' => $data['title'],
                 'text'    => $data['description']
             ];
