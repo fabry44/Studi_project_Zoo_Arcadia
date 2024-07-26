@@ -10,13 +10,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class EmailVerifier
 {
     public function __construct(
         private VerifyEmailHelperInterface $verifyEmailHelper,
         private MailerInterface $mailer,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
+        private FlashBagInterface $flashBag
     ) {
     }
 
@@ -46,21 +50,23 @@ class EmailVerifier
         $apiKey = $_ENV['MAILGUN_API_KEY'];
         $domain = $_ENV['MAILGUN_DOMAIN'];
         $url = "https://api.mailgun.net/v3/$domain/messages";
-
-        $params = [
-            'auth' => ['api', $apiKey],
-            'form_params' => [
-                'from' => $_ENV['MAILGUN_FROM'],
-                'to' => $user->getUsername(),
-                'subject' => $email->getSubject(),
-                'text' => $plainTextBody,
-                'html' => $htmlBody
-            ]
-        ];
-
+        
         try {
-            $client->post($url, $params);
+            $response = $client->post($url, [
+                'auth' => ['api', $apiKey],
+                'form_params' => [
+                    'from' => $_ENV['MAILGUN_FROM'],
+                    'to' => $user->getUsername(),
+                    'subject' => $email->getSubject(),
+                    'text' => $plainTextBody,
+                    'html' => $htmlBody
+                ]
+            ]);
+            $this->flashBag->add('success', 'Votre demande a été envoyée avec succès.');
+            $this->logger->info('Mailgun response: ' . $response->getBody());
         } catch (\Exception $e) {
+            $this->logger->error('Error sending email: ' . $e->getMessage());
+            $this->flashBag->add('error', 'Une erreur est survenue lors de l\'envoi de votre demande.');
             throw new \Exception('Une erreur est survenue lors de l\'envoi de l\'email de confirmation.');
         }
     }

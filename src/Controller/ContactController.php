@@ -29,7 +29,7 @@ class ContactController extends AbstractController
             $apiKey = $_ENV['MAILGUN_API_KEY'];
             $domain = $_ENV['MAILGUN_DOMAIN'];
             $url = "https://api.mailgun.net/v3/$domain/messages";
-
+            
             try {
                 $response = $client->post($url, [
                     'auth' => ['api', $apiKey],
