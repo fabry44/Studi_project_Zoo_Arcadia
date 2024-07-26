@@ -4,7 +4,7 @@ namespace App\Security;
 
 use App\Entity\Utilisateurs;
 use Doctrine\ORM\EntityManagerInterface;
-use Mailgun\Mailgun;
+use GuzzleHttp\Client;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
@@ -28,7 +28,6 @@ class EmailVerifier
             $user->getUsername(),
             ['id' => $user->getId()]
         );
-        
 
         $context = $email->getContext();
         $context['signedUrl'] = $signatureComponents->getSignedUrl();
@@ -38,27 +37,30 @@ class EmailVerifier
 
         $email->context($context);
 
-        // $this->mailer->send($email);
-
         // Convertir le TemplatedEmail en un email texte et HTML simple pour Mailgun
         $plainTextBody = $email->getTextBody();
         $htmlBody = $email->getHtmlBody();
 
-        // Envoi de l'email via Mailgun
-        $mgClient = Mailgun::create($_ENV['MAILGUN_API_KEY']);
+        // Utiliser Guzzle pour envoyer l'email via l'API HTTP de Mailgun
+        $client = new Client();
+        $apiKey = $_ENV['MAILGUN_API_KEY'];
         $domain = $_ENV['MAILGUN_DOMAIN'];
+        $url = "https://api.mailgun.net/v3/$domain/messages";
+
         $params = [
-            'from'    => 'Excited User <' . $_ENV['MAILGUN_FROM'] . '>',
-            'to'      => 'Baz <' . $user->getUsername() . '>',
-            'subject' => $email->getSubject(),
-            'text'    => $plainTextBody,
-            'html'    => $htmlBody
+            'auth' => ['api', $apiKey],
+            'form_params' => [
+                'from' => $_ENV['MAILGUN_FROM'],
+                'to' => $user->getUsername(),
+                'subject' => $email->getSubject(),
+                'text' => $plainTextBody,
+                'html' => $htmlBody
+            ]
         ];
 
         try {
-            $mgClient->messages()->send($domain, $params);
+            $client->post($url, $params);
         } catch (\Exception $e) {
-            // Gérer l'erreur de l'envoi d'email
             throw new \Exception('Une erreur est survenue lors de l\'envoi de l\'email de confirmation.');
         }
     }

@@ -16,6 +16,7 @@
         "doctrine/mongodb-odm-bundle": "^5.0",
         "doctrine/orm": "^3.2",
         "easycorp/easyadmin-bundle": "^4.10",
+        "guzzlehttp/guzzle": "*",
         "guzzlehttp/psr7": "^2.7",
         "mailgun/mailgun-php": "^4.2",
         "php-http/curl-client": "^2.3",

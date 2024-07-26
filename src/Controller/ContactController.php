@@ -3,18 +3,17 @@
 namespace App\Controller;
 
 use App\Form\ContactType;
-use Mailgun\Mailgun;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use GuzzleHttp\Client;
+use Psr\Log\LoggerInterface;
 
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'app_contact')]
-    public function index(Request $request, MailerInterface $mailer): Response
+    public function index(Request $request, LoggerInterface $logger): Response
     {
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
@@ -22,34 +21,32 @@ class ContactController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-             // Utiliser Mailgun pour envoyer l'email
-            $mgClient = Mailgun::create($_ENV['MAILGUN_API_KEY']);
+            // Log the data for debugging
+            $logger->info('Form data: ', $data);
+
+            // Utiliser Guzzle pour envoyer l'email via l'API HTTP de Mailgun
+            $client = new Client();
+            $apiKey = $_ENV['MAILGUN_API_KEY'];
             $domain = $_ENV['MAILGUN_DOMAIN'];
-            $params = [
-                'from'    => $_ENV['mailgun@sandbox1bec5f8fcc1447cab9021d77aab20ed1.mailgun.org'],
-                'to'      => 'Baz <' . $_ENV['MAILGUN_TO'] . '>',
-                'subject' => $data['title'],
-                'text'    => $data['description']
-            ];
+            $url = "https://api.mailgun.net/v3/$domain/messages";
 
             try {
-                $mgClient->messages()->send($domain, $params);
+                $response = $client->post($url, [
+                    'auth' => ['api', $apiKey],
+                    'form_params' => [
+                        'from' => $_ENV['MAILGUN_FROM'],
+                        'to' => $_ENV['MAILGUN_TO'],
+                        'subject' => $data['title'],
+                        'text' => $data['description']
+                    ]
+                ]);
+
+                $logger->info('Mailgun response: ' . $response->getBody());
                 $this->addFlash('success', 'Votre demande a été envoyée avec succès.');
             } catch (\Exception $e) {
+                $logger->error('Error sending email: ' . $e->getMessage());
                 $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi de votre demande.');
             }
-
-            // Envoi de l'email au zoo
-            // $email = (new Email())
-            //     ->from($data['email'])
-            //     ->to('fabienroy2@gmail.com') // Remplacez par l'adresse email du zoo
-            //     ->subject($data['title'])
-            //     ->text($data['description']);
-
-            // $mailer->send($email);
-
-            // Ajouter un message flash
-            // $this->addFlash('success', 'Votre demande a été envoyée avec succès.');
 
             return $this->redirectToRoute('app_contact');
         }
