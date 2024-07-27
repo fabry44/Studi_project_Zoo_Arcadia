@@ -5,9 +5,7 @@
 
 {# Si la valeur du champ est un tableau, on affiche un lien pour chaque habitat #}
 {% if field.value is iterable %}
-<pre>
-    {{ dump(field.value) }}
-</pre>
+
     {% for habitat in field.value %}
         <a href=""{{ path(dynamicPath, {
             crudAction: 'detail',
