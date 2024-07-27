@@ -78,20 +78,20 @@ class AnimauxVoter extends Voter
      * @return bool Retourne true si l'utilisateur peut exécuter l'action, sinon false.
      */
     private function canExecuteAction($context): bool
-  {
-      $action = $context->getRequest()->query->get('crudAction');
-      
-      // Les actions 'new', 'edit' et 'delete' sont réservées aux administrateurs
-      if (in_array($action, ['new', 'edit', 'delete'])) {
-          return $this->security->isGranted('ROLE_ADMIN');
-      }
-      
-      // Les actions 'index' et 'detail' sont autorisées pour tous les rôles
-      if (in_array($action, ['index', 'detail'])) {
-          return $this->security->isGranted('ROLE_EMPLOYE') || $this->security->isGranted('ROLE_VETERINAIRE') || $this->security->isGranted('ROLE_ADMIN');
-      }
+    {
+        $action = $context->getRequest()->query->get('crudAction');
+        
+        // Les actions 'new', 'edit' et 'delete' sont réservées aux administrateurs
+        if (in_array($action, ['new', 'edit', 'delete'])) {
+            return $this->security->isGranted('ROLE_ADMIN');
+        }
+        
+        // Les actions 'index' et 'detail' sont autorisées pour tous les rôles
+        if (in_array($action, ['index', 'detail'])) {
+            return $this->security->isGranted('ROLE_EMPLOYE') || $this->security->isGranted('ROLE_VETERINAIRE') || $this->security->isGranted('ROLE_ADMIN');
+        }
 
-      return false;
-  }
+        return false;
+    }
 
 }

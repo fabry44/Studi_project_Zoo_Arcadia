@@ -61,7 +61,9 @@
         "twig/twig": "^2.12|^3.0",
         "symfony/dotenv": "7.1.*",
         "vich/uploader-bundle": "^2.4",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-mongodb": "*",
+        "doctrine/mongodb-odm": "^2.3"
     },
     "config": {
         "allow-plugins": {

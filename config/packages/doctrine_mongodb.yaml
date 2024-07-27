@@ -12,4 +12,4 @@ doctrine_mongodb:
                     dir: '%kernel.project_dir%/src/Document'
                     prefix: 'App\Document'
                     alias: App
-            metadata_cache_driver: array # array, service, apcu, memcached, redis
+            metadata_cache_driver: array
