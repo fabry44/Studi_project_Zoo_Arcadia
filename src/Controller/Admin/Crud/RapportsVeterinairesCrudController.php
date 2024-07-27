@@ -6,7 +6,6 @@ use App\Entity\Animaux;
 use App\Entity\RapportsVeterinaires;
 use App\Entity\Utilisateurs;
 use App\Filter\VeterinaireRoleFilter;
-use App\Form\Type\VeterinaireRoleFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
