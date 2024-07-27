@@ -1,7 +1,8 @@
 # Studi_project_Zoo_Arcadia
 Projet d'étude Studi (ECF) : conception d'un site web Zoo-Arcadia
 
-## web:
+## web: l'utilisation de l'addon Logtail a tout changé
+
 https://project-zoo-arcadia-c0cc1a69ef90.herokuapp.com/
 
 ## Prérequis
