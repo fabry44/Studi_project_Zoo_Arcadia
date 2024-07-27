@@ -33,7 +33,7 @@
         "symfony/framework-bundle": "7.1.*",
         "symfony/google-mailer": "7.1.*",
         "symfony/http-client": "7.1.*",
-        
+        "symfony/intl": "7.1.*",
         "symfony/mailer": "7.1.*",
         "symfony/mailgun-mailer": "7.1.*",
         "symfony/mime": "7.1.*",
@@ -120,7 +120,6 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*",
-        "symfony/intl": "7.1.*"
+        "symfony/web-profiler-bundle": "7.1.*"
     }
 }
